@@ -34,9 +34,6 @@ public class SecurityConfig {
     private final String apiPrefix = ApiConfig.API_PREFIX;
 
     final List<Pair<String, String>> bypassTokens = Arrays.asList(
-            Pair.of(String.format("%s/welcome", apiPrefix), "GET"),
-            Pair.of(String.format("%s/add-new-user", apiPrefix), "POST"),
-            Pair.of(String.format("%s/generate-token", apiPrefix), "POST"),
             Pair.of(String.format("%s/authenticate", apiPrefix), "POST"),
             Pair.of(String.format("%s/register", apiPrefix), "POST")
     );
@@ -61,8 +58,11 @@ public class SecurityConfig {
                         auth.requestMatchers(bypassToken.getSecond(), bypassToken.getFirst()).permitAll();
                     }
                     auth
+                            .requestMatchers("/account/**").hasAuthority("ROLE_EMPLOYEE_ADMIN")
+                            .requestMatchers("/uploads/**").permitAll()
                             .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
                             .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")
+                            .requestMatchers("/auth/add-account/**").hasAuthority("ROLE_EMPLOYEE_ADMIN")
                             .anyRequest().authenticated(); // Bảo vệ tất cả các endpoint khác
                 })
                 .sessionManagement(sess -> sess

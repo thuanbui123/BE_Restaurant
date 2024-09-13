@@ -1,28 +1,32 @@
 package com.example.restaurant.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Entity(name = "account")
-@Data
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "account")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountInfo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+public class AccountInfo extends BaseEntity{
+    @Column(name = "username", unique = true)
+    private String username;
+
+    @Column(name = "slug")
+    private String slug;
 
     @Column(name = "email")
     private String email;
-
-    @Column(name = "username", unique = true)
-    private String username;
 
     @Column(name = "password")
     private String password;
 
     @Column(name = "role")
     private String role;
+
+    @Column(name = "img")
+    private String img;
 }

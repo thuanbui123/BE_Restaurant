@@ -1,12 +1,19 @@
 package com.example.restaurant.service;
 
-import com.example.restaurant.DTO.AuthRequest;
-import com.example.restaurant.DTO.RegisterRequest;
+import com.example.restaurant.request.AccountRequest;
+import com.example.restaurant.request.AuthRequest;
+import com.example.restaurant.request.EditAccountRequest;
+import com.example.restaurant.request.RegisterRequest;
 import com.example.restaurant.entity.AccountInfo;
 import com.example.restaurant.mapper.AccountMapper;
 import com.example.restaurant.repository.AccountInfoRepository;
+import com.example.restaurant.utils.PaginateUtil;
+import com.example.restaurant.utils.Slugify;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,20 +22,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class AccountService implements UserDetailsService {
     @Autowired
     private AccountInfoRepository repository;
-
-    @Autowired
-    private PasswordEncoder encoder;
 
     @Autowired
     private JwtService jwtService;
@@ -42,22 +43,7 @@ public class AccountService implements UserDetailsService {
         Optional<AccountInfo> userDetail = repository.findByUsername(username);
         // Converting UserInfo to UserDetails
         return userDetail.map(AccountDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-    }
-
-    public String addUser(AccountInfo accountInfo) {
-        // Encode password before saving the user
-        accountInfo.setPassword(encoder.encode(accountInfo.getPassword()));
-        repository.save(accountInfo);
-        return "User Added Successfully";
-    }
-
-    public AccountDetails loadUserByUsernameAndPassword (AuthRequest authRequest) {
-        String username = authRequest.getUsername();
-        String password = encoder.encode(authRequest.getPassword());
-        Optional<AccountInfo> accountInfo = repository.findByUsernameAndPassword(username, password);
-        return accountInfo.map(AccountDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng có tên đăng nhập là: " + username));
     }
 
     public ResponseEntity<?> login (AuthRequest authRequest) {
@@ -75,21 +61,101 @@ public class AccountService implements UserDetailsService {
             response.put("username", accountDetails.getUsername());
             return ResponseEntity.ok(response);
         } catch (BadCredentialsException e) {
-            return new ResponseEntity<>("Incorrect username or password", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Tên đăng nhập hoặc mật khẩu không đúng!", HttpStatus.UNAUTHORIZED);
         }
     }
 
     public ResponseEntity<?> register (RegisterRequest registerRequest) {
-        if(repository.findByUsername(registerRequest.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body("Username already exists");
+        try {
+            if(repository.findByUsername(registerRequest.getUsername()).isPresent()) {
+                return ResponseEntity.badRequest().body("Tên đăng nhập đã tồn tại!");
+            }
+            AccountInfo accountInfo = AccountMapper.mapToAccountInfo(registerRequest);
+            repository.save(accountInfo);
+            final AccountDetails accountDetails = loadUserByUsername(registerRequest.getUsername());
+            final String jwt = jwtService.generateToken(accountDetails.getUsername());
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", jwt);
+            response.put("username", accountDetails.getUsername());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Đã xảy ra lỗi khi đăng ký tài khoản: " + e.getMessage());
         }
-        AccountInfo accountInfo = AccountMapper.mapToAccountInfo(registerRequest);
-        repository.save(accountInfo);
-        final AccountDetails accountDetails = loadUserByUsername(registerRequest.getUsername());
-        final String jwt = jwtService.generateToken(accountDetails.getUsername());
-        Map<String, Object> response = new HashMap<>();
-        response.put("token", jwt);
-        response.put("username", accountDetails.getUsername());
-        return ResponseEntity.ok(response);
+    }
+
+    public ResponseEntity<?> addAccount (AccountRequest accountRequest) {
+        try {
+            if(repository.findByUsername(accountRequest.getUsername()).isPresent()) {
+                return ResponseEntity.badRequest().body("Tên đăng nhập đã tồn tại!");
+            }
+            AccountInfo accountInfo = AccountMapper.mapToAccountInfo(accountRequest);
+            repository.save(accountInfo);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Thêm tài khoản thành công.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Đã có lỗi xảy ra khi thêm mới tài khoản: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<?> findAll(Pageable pageable) {
+        return PaginateUtil.paginate(repository::findAll, pageable, AccountMapper::maToAccountResponse);
+    }
+
+    public ResponseEntity<?> findByRole(String role, Pageable pageable) {
+        return PaginateUtil.paginate(
+                (pg) -> repository.findByRole(role, pg),
+                pageable,
+                AccountMapper::maToAccountResponse
+        );
+    }
+
+    public ResponseEntity<?> findBySlug (String query, Pageable pageable) {
+        final String slug = Slugify.toSlug(query);
+        return PaginateUtil.paginate(
+                (pg) -> repository.findBySlugContainingIgnoreCaseAndRole(slug, "ROLE_EMPLOYEE", pg),
+                pageable,
+                AccountMapper::maToAccountResponse
+        );
+    }
+
+    public ResponseEntity<?> findData (Integer page, Integer size, String prefix, String query) {
+        Pageable pageable = PageRequest.of(page, size);
+        if ("find-all".equals(prefix) && query == null) {
+            return findByRole("ROLE_EMPLOYEE", pageable);
+        } else if ("search".equals(prefix) && query != null) {
+            return findBySlug(query, pageable);
+        }
+        return new ResponseEntity<>("API không tồn tại!", HttpStatus.NOT_FOUND);
+    }
+
+    @Transactional
+    public ResponseEntity<?> updateData (String query, EditAccountRequest request) {
+        try {
+            String slug = Slugify.toSlug(query);
+            AccountInfo existsAccount = repository.findOneBySlug(slug);
+            if (existsAccount == null) {
+                return new ResponseEntity<>("Tài khoản không tồn tại!" , HttpStatus.NOT_FOUND);
+            }
+            existsAccount.setEmail(request.getEmail());
+            existsAccount.setImg(request.getImg());
+            return new ResponseEntity<>(AccountMapper.maToAccountResponse(repository.save(existsAccount)), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Có lỗi xảy ra trong khi cập nhật tài khoản!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<?> deleteData (String slug) {
+        try {
+            AccountInfo accountInfo = repository.findOneBySlug(slug);
+            if (accountInfo == null) {
+                return new ResponseEntity<>("Tài khoản không tồn tại!", HttpStatus.NOT_FOUND);
+            }
+            repository.deleteById(accountInfo.getId());
+            return new ResponseEntity<>("Xóa tài khoản thành công.", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Có lỗi xảy ra trong khi xóa tài khoản!", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
