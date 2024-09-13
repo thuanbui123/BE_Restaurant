@@ -31,11 +31,19 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String apiPrefix = ApiConfig.API_PREFIX;
+    private final String apiAuthPrefix = ApiConfig.API_AUTH_PREFIX;
+    private final String apiFoodCategoryPrefix = ApiConfig.API_FOOD_CATEGORY_PREFIX;
 
     final List<Pair<String, String>> bypassTokens = Arrays.asList(
-            Pair.of(String.format("%s/authenticate", apiPrefix), "POST"),
-            Pair.of(String.format("%s/register", apiPrefix), "POST")
+            Pair.of(String.format("%s/authenticate", apiAuthPrefix), "POST"),
+            Pair.of(String.format("%s/register", apiAuthPrefix), "POST"),
+            Pair.of(String.format("%s/{prefix}", apiFoodCategoryPrefix), "GET")
+    );
+
+    final List<Pair<String, String>> noBypassTokens = Arrays.asList(
+            Pair.of(String.format("%s/add", apiFoodCategoryPrefix), "POST"),
+            Pair.of(String.format("%s/update/{prefix}", apiFoodCategoryPrefix), "PUT"),
+            Pair.of(String.format("%s/delete/{prefix}", apiFoodCategoryPrefix), "DELETE")
     );
 
     @Autowired
@@ -57,9 +65,14 @@ public class SecurityConfig {
                     for (Pair<String, String> bypassToken : bypassTokens) {
                         auth.requestMatchers(bypassToken.getSecond(), bypassToken.getFirst()).permitAll();
                     }
+
+                    for (Pair<String, String> nobypassToken : noBypassTokens) {
+                        auth.requestMatchers(nobypassToken.getSecond(), nobypassToken.getFirst()).hasAuthority("ROLE_EMPLOYEE_ADMIN");
+                    }
+
                     auth
-                            .requestMatchers("/account/**").hasAuthority("ROLE_EMPLOYEE_ADMIN")
                             .requestMatchers("/uploads/**").permitAll()
+                            .requestMatchers("/account/**").hasAuthority("ROLE_EMPLOYEE_ADMIN")
                             .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
                             .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")
                             .requestMatchers("/auth/add-account/**").hasAuthority("ROLE_EMPLOYEE_ADMIN")

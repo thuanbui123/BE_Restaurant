@@ -94,7 +94,7 @@ public class AccountService implements UserDetailsService {
             return ResponseEntity.status(HttpStatus.CREATED).body("Thêm tài khoản thành công.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Đã có lỗi xảy ra khi thêm mới tài khoản: " + e.getMessage());
+                    .body("Đã có lỗi xảy ra khi thêm tài khoản mới: " + e.getMessage());
         }
     }
 
