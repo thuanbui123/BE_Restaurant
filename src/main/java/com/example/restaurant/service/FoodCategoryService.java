@@ -46,7 +46,7 @@ public class FoodCategoryService {
 
     public ResponseEntity<?> findBySlug (String slug, Pageable pageable) {
         return PaginateUtil.paginate(
-                (pg) -> repository.findBySlug(slug, pageable),
+                (pg) -> repository.findBySlugContainingIgnoreCase(slug, pageable),
                 pageable,
                 FoodCategoryMapper::mapToAdminResponse
         );
@@ -95,7 +95,7 @@ public class FoodCategoryService {
             repository.save(existsEntity);
             return ResponseEntity.ok().body("Cập nhật danh mục thức ăn thành công.");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi cập nhật danh mục thức ăn!");
+            return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi cập nhật danh mục thức ăn: " + e.getMessage());
         }
     }
 
@@ -109,7 +109,7 @@ public class FoodCategoryService {
             repository.deleteById(id);
             return ResponseEntity.ok().body("Xóa danh mục thức ăn thành công.");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi xóa danh mục thức ăn!");
+            return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi xóa danh mục thức ăn: " + e.getMessage());
         }
     }
 }

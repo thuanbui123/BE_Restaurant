@@ -1,7 +1,7 @@
 package com.example.restaurant.controller;
 
-import com.example.restaurant.request.FoodCategoryRequest;
-import com.example.restaurant.service.FoodCategoryService;
+import com.example.restaurant.request.FoodsRequest;
+import com.example.restaurant.service.FoodsService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,46 +10,47 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/food-category")
-public class FoodCategoryController {
+@RequestMapping("/foods")
+public class FoodsController {
     @Autowired
-    private FoodCategoryService service;
+    private FoodsService service;
 
     @GetMapping("/{prefix}")
-    public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size, @RequestParam(required = false) String query) {
+    public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String query) {
         return service.findData(prefix, page, size, query);
     }
 
     @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
     @PostMapping("/add")
-    public ResponseEntity<?> addFoodCategory (@Valid @RequestBody FoodCategoryRequest request, BindingResult result) {
+    public ResponseEntity<?> addData (@Valid @RequestBody FoodsRequest request, BindingResult result) {
         if (result.hasErrors()) {
             String errors = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .collect(Collectors.joining(", "));
             return ResponseEntity.badRequest().body(errors);
         }
-        return service.addData(request);
+        return service.addFood(request);
     }
 
     @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
     @PutMapping("/update/{code}")
-    public ResponseEntity<?> updateFoodCategory (@PathVariable Integer code, @Valid @RequestBody FoodCategoryRequest request, BindingResult result) {
+    public ResponseEntity<?> updateData (@PathVariable String code, @Valid @RequestBody FoodsRequest request, BindingResult result) {
         if (result.hasErrors()) {
             String errors = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .collect(Collectors.joining(", "));
             return ResponseEntity.badRequest().body(errors);
         }
-        return service.updateData(code, request);
+        return service.updateFood(code, request);
     }
 
     @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
     @DeleteMapping("/delete/{code}")
-    public ResponseEntity<?> deleteFoodCategory (@PathVariable Integer code) {
-        return service.deleteData(code);
+    public ResponseEntity<?> deleteData (@PathVariable String code) {
+        return service.deleteFood(code);
     }
 }

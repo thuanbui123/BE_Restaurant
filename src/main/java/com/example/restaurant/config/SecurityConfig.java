@@ -32,18 +32,28 @@ import java.util.List;
 public class SecurityConfig {
 
     private final String apiAuthPrefix = ApiConfig.API_AUTH_PREFIX;
+
     private final String apiFoodCategoryPrefix = ApiConfig.API_FOOD_CATEGORY_PREFIX;
+
+    private final String apiFoodPrefix = ApiConfig.API_FOOD_PREFIX;
+
+    private final String apiRecommendationPrefix = ApiConfig.API_RECOMMENDATION;
 
     final List<Pair<String, String>> bypassTokens = Arrays.asList(
             Pair.of(String.format("%s/authenticate", apiAuthPrefix), "POST"),
             Pair.of(String.format("%s/register", apiAuthPrefix), "POST"),
-            Pair.of(String.format("%s/{prefix}", apiFoodCategoryPrefix), "GET")
+            Pair.of(String.format("%s/{prefix}", apiFoodCategoryPrefix), "GET"),
+            Pair.of(String.format("%s/{prefix}", apiFoodPrefix), "GET"),
+            Pair.of(String.format("%s/customer/{customerId}", apiRecommendationPrefix), "GET")
     );
 
     final List<Pair<String, String>> noBypassTokens = Arrays.asList(
             Pair.of(String.format("%s/add", apiFoodCategoryPrefix), "POST"),
             Pair.of(String.format("%s/update/{prefix}", apiFoodCategoryPrefix), "PUT"),
-            Pair.of(String.format("%s/delete/{prefix}", apiFoodCategoryPrefix), "DELETE")
+            Pair.of(String.format("%s/delete/{prefix}", apiFoodCategoryPrefix), "DELETE"),
+            Pair.of(String.format("%s/add", apiFoodPrefix), "POST"),
+            Pair.of(String.format("%s/update/{code}", apiFoodPrefix), "PUT"),
+            Pair.of(String.format("%s/delete/{code}", apiFoodPrefix), "DELETE")
     );
 
     @Autowired

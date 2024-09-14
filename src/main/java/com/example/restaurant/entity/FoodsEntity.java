@@ -1,10 +1,12 @@
 package com.example.restaurant.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "foods")
@@ -42,4 +44,8 @@ public class FoodsEntity extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name = "categoryId")
     )
     private List<FoodCategoryEntity> foodCategoryEntities;
+
+    @OneToMany(mappedBy = "foods", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<CustomerFoodReviewEntity> reviewEntities;
 }

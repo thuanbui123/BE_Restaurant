@@ -12,7 +12,8 @@ import java.util.Optional;
 
 @Repository
 public interface FoodCategoryRepository extends JpaRepository<FoodCategoryEntity, Integer> {
-    Page<FoodCategoryEntity> findBySlug(String slug, Pageable pageable);
+
+    Page<FoodCategoryEntity> findBySlugContainingIgnoreCase(String slug, Pageable pageable);
 
     Optional<FoodCategoryEntity> findByName(String name);
 
