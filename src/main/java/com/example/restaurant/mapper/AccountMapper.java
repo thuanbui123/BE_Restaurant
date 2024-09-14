@@ -22,7 +22,6 @@ public class AccountMapper {
 
     public static AccountInfo mapToAccountInfo (RegisterRequest registerRequest) {
         AccountInfo accountInfo = new AccountInfo();
-        accountInfo.setEmail(registerRequest.getEmail());
         accountInfo.setUsername(registerRequest.getUsername());
         accountInfo.setSlug(Slugify.toSlug(registerRequest.getUsername()));
         accountInfo.setPassword(encoder.encode(registerRequest.getPassword()));
@@ -33,7 +32,6 @@ public class AccountMapper {
 
     public static AccountInfo mapToAccountInfo (AccountRequest accountRequest){
         AccountInfo accountInfo = new AccountInfo();
-        accountInfo.setEmail(accountRequest.getEmail());
         accountInfo.setUsername(accountRequest.getUsername());
         accountInfo.setSlug(Slugify.toSlug(accountRequest.getUsername()));
         accountInfo.setPassword(encoder.encode(accountRequest.getPassword()));
@@ -45,7 +43,6 @@ public class AccountMapper {
     public static AccountResponse maToAccountResponse (AccountInfo accountInfo) {
         AccountResponse response = new AccountResponse();
         response.setUsername(accountInfo.getUsername());
-        response.setEmail(accountInfo.getEmail());
         response.setRole(accountInfo.getRole());
         response.setImg(accountInfo.getImg());
         response.setCreatedAt(TimeConvertUtil.convertTimestampToDate(accountInfo.getCreatedAt()));

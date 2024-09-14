@@ -18,9 +18,6 @@ public class AccountInfo extends BaseEntity{
     @Column(name = "slug")
     private String slug;
 
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "password")
     private String password;
 

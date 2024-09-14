@@ -65,6 +65,10 @@ public class AccountService implements UserDetailsService {
         }
     }
 
+    public AccountInfo findOneById (Integer id) {
+        return repository.findOneById(id) != null ? repository.findOneById(id) : null;
+    }
+
     public ResponseEntity<?> register (RegisterRequest registerRequest) {
         try {
             if(repository.findByUsername(registerRequest.getUsername()).isPresent()) {
@@ -137,7 +141,6 @@ public class AccountService implements UserDetailsService {
             if (existsAccount == null) {
                 return new ResponseEntity<>("Tài khoản không tồn tại!" , HttpStatus.NOT_FOUND);
             }
-            existsAccount.setEmail(request.getEmail());
             existsAccount.setImg(request.getImg());
             return new ResponseEntity<>(AccountMapper.maToAccountResponse(repository.save(existsAccount)), HttpStatus.OK);
         } catch (Exception e) {

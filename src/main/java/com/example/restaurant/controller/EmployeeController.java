@@ -1,8 +1,8 @@
 package com.example.restaurant.controller;
 
-import com.example.restaurant.request.FoodsRequest;
+import com.example.restaurant.request.EmployeeRequest;
 import com.example.restaurant.response.ErrorResponse;
-import com.example.restaurant.service.FoodsService;
+import com.example.restaurant.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,15 +11,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/foods")
-public class FoodsController {
+@RequestMapping("/employees")
+public class EmployeeController {
     @Autowired
-    private FoodsService service;
+    private EmployeeService service;
 
+    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
     @GetMapping("/{prefix}")
     public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String query) {
         return service.findData(prefix, page, size, query);
@@ -27,31 +27,31 @@ public class FoodsController {
 
     @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
     @PostMapping("/add")
-    public ResponseEntity<?> addData (@Valid @RequestBody FoodsRequest request, BindingResult result) {
+    public ResponseEntity<?> addData (@Valid @RequestBody EmployeeRequest request, BindingResult result) {
         if (result.hasErrors()) {
             String errors = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .collect(Collectors.joining(", "));
             return ResponseEntity.badRequest().body(new ErrorResponse(errors));
         }
-        return service.addFood(request);
+        return service.addData(request);
     }
 
     @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
     @PutMapping("/update/{code}")
-    public ResponseEntity<?> updateData (@PathVariable String code, @Valid @RequestBody FoodsRequest request, BindingResult result) {
+    public ResponseEntity<?> updateData (@PathVariable String code, @Valid @RequestBody EmployeeRequest request, BindingResult result) {
         if (result.hasErrors()) {
             String errors = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .collect(Collectors.joining(", "));
             return ResponseEntity.badRequest().body(new ErrorResponse(errors));
         }
-        return service.updateFood(code, request);
+        return service.updateData(code, request);
     }
 
     @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
     @DeleteMapping("/delete/{code}")
     public ResponseEntity<?> deleteData (@PathVariable String code) {
-        return service.deleteFood(code);
+        return service.deleteData(code);
     }
 }

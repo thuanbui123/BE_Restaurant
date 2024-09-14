@@ -1,6 +1,7 @@
 package com.example.restaurant.controller;
 
 import com.example.restaurant.request.FoodCategoryRequest;
+import com.example.restaurant.response.ErrorResponse;
 import com.example.restaurant.service.FoodCategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class FoodCategoryController {
             String errors = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(new ErrorResponse(errors));
         }
         return service.addData(request);
     }
@@ -42,7 +43,7 @@ public class FoodCategoryController {
             String errors = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(new ErrorResponse(errors));
         }
         return service.updateData(code, request);
     }

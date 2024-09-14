@@ -7,6 +7,6 @@ public class ApiConfig {
     public static final String API_AUTH_PREFIX = "/auth";
     public static final String API_FOOD_CATEGORY_PREFIX = "/food-category";
     public static final String API_FOOD_PREFIX = "/foods";
-
     public static final String API_RECOMMENDATION = "/api/recommendations";
+    public static final String API_EMPLOYEE_PREFIX = "/employees";
 }

@@ -8,10 +8,6 @@ import lombok.Data;
 
 @Data
 public class RegisterRequest {
-    @NotBlank(message = "Email là một trường bắt buộc!")
-    @Email(message = "Email không hợp lệ!")
-    private String email;
-
     @NotBlank(message = "Tên đăng nhập là một trường bắt buộc!")
     private String username;
 
