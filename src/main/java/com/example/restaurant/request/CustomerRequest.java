@@ -4,12 +4,12 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public class EmployeeRequest {
-    @NotBlank(message = "Mã nhân viên là một trường dữ liệu bắt buộc!")
-    @Pattern(regexp = "^[^\\s]{6,10}$", message = "Mã nhân viên phải dài từ 6 đến 10 ký tự và không chứa khoảng trắng!")
+public class CustomerRequest {
+    @NotBlank(message = "Mã khách hàng là một trường dữ liệu bắt buộc!")
+    @Pattern(regexp = "^[^\\s]{6,10}$", message = "Mã khách hàng phải dài từ 6 đến 10 ký tự và không chứa khoảng trắng!")
     private String code;
 
-    @NotBlank(message = "Tên nhân viên là một trường dữ liệu bắt buộc!")
+    @NotBlank(message = "Tên khách hàng là một trường dữ liệu bắt buộc!")
     private String name;
 
     @NotBlank(message = "Số điện thoại là một trường dữ liệu bắt buộc!")

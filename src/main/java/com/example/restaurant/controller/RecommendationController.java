@@ -13,6 +13,13 @@ public class RecommendationController {
     @Autowired
     private RecommendationService service;
 
+    /**
+     * Lấy các món ăn gợi ý cho khách hàng hiện
+     * từ các khách hàng tương đồng trong hệ thống
+     * @param customerId
+     * @param limit
+     * @return
+     */
     @GetMapping("/customer/{customerId}")
     public List<FoodsResponse> recommendFoods(@PathVariable Integer customerId, @RequestParam Integer limit) {
         return service.recommendFoodsForCustomer(customerId, limit);
