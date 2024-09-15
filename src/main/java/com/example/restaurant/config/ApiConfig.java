@@ -10,4 +10,5 @@ public class ApiConfig {
     public static final String API_RECOMMENDATION = "/api/recommendations";
     public static final String API_EMPLOYEE_PREFIX = "/employees";
     public static final String API_CUSTOMER_PREFIX = "/customers";
+    public static final String API_SUPPLIER_PREFIX = "/suppliers";
 }
