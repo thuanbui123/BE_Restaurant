@@ -37,4 +37,8 @@ public class EmployeeEntity extends BaseEntity{
     @OneToMany(mappedBy = "employeeEntity", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<ImportInvoiceEntity> importInvoiceEntities;
+
+    @OneToMany(mappedBy = "employeeEntity", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<BlogPostEntity> blogPostEntities;
 }

@@ -38,6 +38,10 @@ public class EmployeeService {
         );
     }
 
+    public EmployeeEntity findOneById (Integer employeeId) {
+        return repository.findOneById(employeeId);
+    }
+
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
         Pageable pageable = PageRequest.of(page, size);
         if (prefix.equals("find-all") && query == null) {

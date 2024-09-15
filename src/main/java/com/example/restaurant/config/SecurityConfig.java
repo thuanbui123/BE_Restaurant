@@ -45,6 +45,8 @@ public class SecurityConfig {
 
     private final String apiSupplierPrefix = ApiConfig.API_SUPPLIER_PREFIX;
 
+    private final String apiBlogPostPrefix = ApiConfig.API_BLOG_POST_PREFIX;
+
     final List<Pair<String, String>> bypassTokens = Arrays.asList(
             Pair.of(String.format("%s/authenticate", apiAuthPrefix), "POST"),
             Pair.of(String.format("%s/register", apiAuthPrefix), "POST"),
@@ -71,7 +73,11 @@ public class SecurityConfig {
             Pair.of(String.format("%s/{prefix}", apiSupplierPrefix), "GET"),
             Pair.of(String.format("%s/add", apiSupplierPrefix), "POST"),
             Pair.of(String.format("%s/update/{code}", apiSupplierPrefix), "PUT"),
-            Pair.of(String.format("%s/delete/{code}", apiSupplierPrefix), "DELETE")
+            Pair.of(String.format("%s/delete/{code}", apiSupplierPrefix), "DELETE"),
+            Pair.of(String.format("%s/{prefix}", apiBlogPostPrefix), "GET"),
+            Pair.of(String.format("%s/add", apiBlogPostPrefix), "POST"),
+            Pair.of(String.format("%s/update/{code}", apiBlogPostPrefix), "PUT"),
+            Pair.of(String.format("%s/delete/{code}", apiBlogPostPrefix), "DELETE")
     );
 
     @Autowired
