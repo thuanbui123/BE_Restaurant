@@ -13,4 +13,6 @@ public class ApiConfig {
     public static final String API_SUPPLIER_PREFIX = "/suppliers";
 
     public static final String API_BLOG_POST_PREFIX = "/blog-post";
+
+    public static final String API_TABLES_PREFIX = "/tables";
 }

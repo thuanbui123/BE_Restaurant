@@ -13,6 +13,9 @@ import java.util.Set;
 @Getter
 @Setter
 public class TablesEntity extends BaseEntity {
+    @Column (name = "code")
+    private String code;
+
     @Column(name = "location")
     private String location;
 

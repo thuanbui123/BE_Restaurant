@@ -61,7 +61,7 @@ public class SupplierService {
     public ResponseEntity<?> updateData (String code, SupplierRequest request) {
         try {
             if (!repository.existsByCode(code)) {
-                return ResponseEntity.badRequest().body("Không tồn nhà cung cấp với mã: " + code);
+                return ResponseEntity.badRequest().body("Không tồn tại nhà cung cấp với mã: " + code);
             }
             SuppliersEntity existsEntity = repository.findOneByCode(code);
             existsEntity.setName(request.getName());
@@ -86,7 +86,7 @@ public class SupplierService {
             repository.deleteByCode(code);
             return ResponseEntity.ok().body("Xóa thông tin nhà cung cấp thành công");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi xóa thông tin nhà cung câps: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi xóa thông tin nhà cung cấp: " + e.getMessage());
         }
     }
 }
