@@ -4,7 +4,6 @@ import com.example.restaurant.entity.FoodCategoryEntity;
 import com.example.restaurant.mapper.FoodCategoryMapper;
 import com.example.restaurant.repository.FoodCategoryRepository;
 import com.example.restaurant.request.FoodCategoryRequest;
-import com.example.restaurant.response.FoodCategoryAdminResponse;
 import com.example.restaurant.response.FoodCategoryUserResponse;
 import com.example.restaurant.utils.PaginateUtil;
 import com.example.restaurant.utils.Slugify;

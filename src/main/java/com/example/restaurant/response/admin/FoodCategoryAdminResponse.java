@@ -1,4 +1,4 @@
-package com.example.restaurant.response;
+package com.example.restaurant.response.admin;
 
 import lombok.Data;
 

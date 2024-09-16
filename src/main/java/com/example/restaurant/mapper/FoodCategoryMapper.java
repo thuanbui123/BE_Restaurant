@@ -3,7 +3,7 @@ package com.example.restaurant.mapper;
 import com.example.restaurant.entity.FoodCategoryEntity;
 import com.example.restaurant.entity.FoodsEntity;
 import com.example.restaurant.request.FoodCategoryRequest;
-import com.example.restaurant.response.FoodCategoryAdminResponse;
+import com.example.restaurant.response.admin.FoodCategoryAdminResponse;
 import com.example.restaurant.response.FoodCategoryUserResponse;
 import com.example.restaurant.service.FoodsService;
 import com.example.restaurant.utils.Slugify;
