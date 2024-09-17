@@ -4,6 +4,7 @@ import com.example.restaurant.entity.FoodsEntity;
 import com.example.restaurant.request.FoodsRequest;
 import com.example.restaurant.response.FoodsResponse;
 import com.example.restaurant.utils.Slugify;
+import com.example.restaurant.utils.TimeConvertUtil;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,6 +27,8 @@ public class FoodsMapper {
         response.setPrice(entity.getPrice());
         response.setImg(entity.getImg());
         response.setDescription(entity.getDescription());
+        response.setCreateAt(TimeConvertUtil.convertTimestampToDate(entity.getCreatedAt()));
+        response.setUpdateAt(TimeConvertUtil.convertTimestampToDate(entity.getUpdatedAt()));
         return response;
     }
 }

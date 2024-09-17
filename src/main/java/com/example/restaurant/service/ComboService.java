@@ -4,7 +4,6 @@ import com.example.restaurant.entity.ComboEntity;
 import com.example.restaurant.mapper.ComboMapper;
 import com.example.restaurant.repository.ComboRepository;
 import com.example.restaurant.request.ComboRequest;
-import com.example.restaurant.response.ComboUserResponse;
 import com.example.restaurant.utils.PaginateUtil;
 import com.example.restaurant.utils.Slugify;
 import jakarta.transaction.Transactional;
@@ -15,9 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 public class ComboService {
     @Autowired
@@ -27,37 +23,20 @@ public class ComboService {
         return PaginateUtil.paginate(
                 repository::findAll,
                 pageable,
-                ComboMapper::mapToAdminResponse);
-    }
-
-    public List<ComboUserResponse> findAll () {
-        List<ComboUserResponse> userResponses = new ArrayList<>();
-        List<ComboEntity> entities = repository.findAll();
-        if (!entities.isEmpty()) {
-            for (ComboEntity entity : entities) {
-                userResponses.add(ComboMapper.mapToUserResponse(entity));
-            }
-            return userResponses;
-        }
-        return null;
+                ComboMapper::mapToResponse);
     }
 
     public ResponseEntity<?> findBySlug (String slug, Pageable pageable) {
         return PaginateUtil.paginate(
                 (pg) -> repository.findBySlugContainingIgnoreCase(slug, pageable),
                 pageable,
-                ComboMapper::mapToAdminResponse
+                ComboMapper::mapToResponse
         );
     }
 
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
-        Pageable pageable = null;
-        if (page != null && size != null) {
-            pageable = PageRequest.of(page, size);
-        }
-        if (prefix.equals("user-find-all") && query == null) {
-            return ResponseEntity.ok(findAll());
-        } else if (prefix.equals("admin-find-all") && query == null) {
+        Pageable pageable =  PageRequest.of(page, size);
+        if (prefix.equals("find-all") && query == null) {
             return new ResponseEntity<>(findAll(pageable), HttpStatus.OK);
         } else if (prefix.equals("search") && query != null) {
             final String slug = Slugify.toSlug(query);

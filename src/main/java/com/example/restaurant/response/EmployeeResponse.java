@@ -10,4 +10,6 @@ public class EmployeeResponse {
     private String email;
     private String address;
     private String img;
+    private String createAt;
+    private String updateAt;
 }

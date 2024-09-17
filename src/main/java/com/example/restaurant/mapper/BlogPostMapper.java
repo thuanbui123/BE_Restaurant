@@ -6,6 +6,7 @@ import com.example.restaurant.request.BlogPostRequest;
 import com.example.restaurant.response.BlogPostResponse;
 import com.example.restaurant.service.EmployeeService;
 import com.example.restaurant.utils.Slugify;
+import com.example.restaurant.utils.TimeConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +39,8 @@ public class BlogPostMapper {
         response.setTitle(entity.getTitle());
         response.setContent(entity.getContent());
         response.setEmployeeName(entity.getEmployeeEntity().getName());
+        response.setCreateAt(TimeConvertUtil.convertTimestampToDate(entity.getCreatedAt()));
+        response.setUpdateAt(TimeConvertUtil.convertTimestampToDate(entity.getUpdatedAt()));
         return response;
     }
 }

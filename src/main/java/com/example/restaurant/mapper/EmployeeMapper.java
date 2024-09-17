@@ -6,6 +6,7 @@ import com.example.restaurant.request.EmployeeRequest;
 import com.example.restaurant.response.EmployeeResponse;
 import com.example.restaurant.service.AccountService;
 import com.example.restaurant.utils.Slugify;
+import com.example.restaurant.utils.TimeConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +44,8 @@ public class EmployeeMapper {
         response.setEmail(entity.getEmail());
         response.setAddress(entity.getAddress());
         response.setImg(entity.getAccount().getImg());
+        response.setCreateAt(TimeConvertUtil.convertTimestampToDate(entity.getCreatedAt()));
+        response.setUpdateAt(TimeConvertUtil.convertTimestampToDate(entity.getUpdatedAt()));
         return response;
     }
 }

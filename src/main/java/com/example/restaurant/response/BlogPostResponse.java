@@ -8,4 +8,6 @@ public class BlogPostResponse {
     private String title;
     private String content;
     private String employeeName;
+    private String createAt;
+    private String updateAt;
 }

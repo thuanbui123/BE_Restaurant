@@ -9,4 +9,6 @@ public class FoodsResponse {
     private String img;
     private Long price;
     private String description;
+    private String createAt;
+    private String updateAt;
 }

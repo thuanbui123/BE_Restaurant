@@ -4,6 +4,7 @@ import com.example.restaurant.entity.SuppliersEntity;
 import com.example.restaurant.request.SupplierRequest;
 import com.example.restaurant.response.SupplierResponse;
 import com.example.restaurant.utils.Slugify;
+import com.example.restaurant.utils.TimeConvertUtil;
 
 public class SupplierMapper {
     public static SuppliersEntity mapToEntity (SupplierRequest request) {
@@ -24,6 +25,8 @@ public class SupplierMapper {
         response.setPhoneNumber(entity.getPhoneNumber());
         response.setEmail(entity.getEmail());
         response.setAddress(entity.getAddress());
+        response.setCreateAt(TimeConvertUtil.convertTimestampToDate(entity.getCreatedAt()));
+        response.setUpdateAt(TimeConvertUtil.convertTimestampToDate(entity.getUpdatedAt()));
         return response;
     }
 }

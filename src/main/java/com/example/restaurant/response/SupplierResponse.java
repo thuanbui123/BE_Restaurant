@@ -9,4 +9,6 @@ public class SupplierResponse {
     private String phoneNumber;
     private String email;
     private String address;
+    private String createAt;
+    private String updateAt;
 }

@@ -2,8 +2,7 @@ package com.example.restaurant.mapper;
 
 import com.example.restaurant.entity.ComboEntity;
 import com.example.restaurant.request.ComboRequest;
-import com.example.restaurant.response.ComboUserResponse;
-import com.example.restaurant.response.admin.ComboAdminResponse;
+import com.example.restaurant.response.ComboResponse;
 import com.example.restaurant.utils.Slugify;
 import com.example.restaurant.utils.TimeConvertUtil;
 import org.springframework.stereotype.Component;
@@ -21,25 +20,15 @@ public class ComboMapper {
         return entity;
     }
 
-    public static ComboAdminResponse mapToAdminResponse (ComboEntity entity) {
-        ComboAdminResponse response = new ComboAdminResponse();
+    public static ComboResponse mapToResponse (ComboEntity entity) {
+        ComboResponse response = new ComboResponse();
         response.setCode(entity.getCode());
         response.setName(entity.getName());
         response.setImg(entity.getImg());
         response.setPrice(entity.getPrice());
         response.setDescription(entity.getDescription());
-        response.setCreatedAt(TimeConvertUtil.convertTimestampToDate(entity.getCreatedAt()));
-        response.setUpdatedAt(TimeConvertUtil.convertTimestampToDate(entity.getUpdatedAt()));
-        return response;
-    }
-
-    public static ComboUserResponse mapToUserResponse (ComboEntity entity) {
-        ComboUserResponse response = new ComboUserResponse();
-        response.setCode(entity.getCode());
-        response.setName(entity.getName());
-        response.setImg(entity.getImg());
-        response.setPrice(entity.getPrice());
-        response.setDescription(entity.getDescription());
+        response.setCreateAt(TimeConvertUtil.convertTimestampToDate(entity.getCreatedAt()));
+        response.setUpdateAt(TimeConvertUtil.convertTimestampToDate(entity.getUpdatedAt()));
         return response;
     }
 }
