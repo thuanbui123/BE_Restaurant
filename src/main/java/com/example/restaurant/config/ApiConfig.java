@@ -17,4 +17,6 @@ public class ApiConfig {
     public static final String API_TABLES_PREFIX = "/tables";
 
     public static final String API_INGREDIENT_CATEGORIES_PREFIX = "/ingredient-categories";
+
+    public static final String API_COMBOS_PREFIX = "/combos";
 }

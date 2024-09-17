@@ -51,6 +51,8 @@ public class SecurityConfig {
 
     private final String apiIngredientCategoriesPrefix = ApiConfig.API_INGREDIENT_CATEGORIES_PREFIX;
 
+    private final String apiCombosPrefix = ApiConfig.API_COMBOS_PREFIX;
+
     final List<Pair<String, String>> bypassTokens = Arrays.asList(
             Pair.of(String.format("%s/authenticate", apiAuthPrefix), "POST"),
             Pair.of(String.format("%s/register", apiAuthPrefix), "POST"),
@@ -58,7 +60,8 @@ public class SecurityConfig {
             Pair.of(String.format("%s/{prefix}", apiFoodPrefix), "GET"),
             Pair.of(String.format("%s/customer/{customerId}", apiRecommendationPrefix), "GET"),
             Pair.of(String.format("%s/{prefix}", apiTablesPrefix), "GET"),
-            Pair.of(String.format("%s/{prefix}", apiIngredientCategoriesPrefix), "GET")
+            Pair.of(String.format("%s/{prefix}", apiIngredientCategoriesPrefix), "GET"),
+            Pair.of(String.format("%s/{prefix}", apiCombosPrefix), "GET")
     );
 
     final List<Pair<String, String>> noBypassTokens = Arrays.asList(
@@ -89,7 +92,10 @@ public class SecurityConfig {
             Pair.of(String.format("%s/delete/{code}", apiTablesPrefix), "DELETE"),
             Pair.of(String.format("%s/add", apiIngredientCategoriesPrefix), "POST"),
             Pair.of(String.format("%s/update/{code}", apiIngredientCategoriesPrefix), "PUT"),
-            Pair.of(String.format("%s/delete/{code}", apiIngredientCategoriesPrefix), "DELETE")
+            Pair.of(String.format("%s/delete/{code}", apiIngredientCategoriesPrefix), "DELETE"),
+            Pair.of(String.format("%s/add", apiCombosPrefix), "POST"),
+            Pair.of(String.format("%s/update/{code}", apiCombosPrefix), "PUT"),
+            Pair.of(String.format("%s/delete/{code}", apiCombosPrefix), "DELETE")
     );
 
     @Autowired

@@ -7,4 +7,6 @@ public class FoodCategoryAdminResponse {
     private Integer id;
     private String name;
     private String description;
+    private String createAt;
+    private String updateAt;
 }

@@ -4,6 +4,7 @@ import com.example.restaurant.entity.IngredientCategoryEntity;
 import com.example.restaurant.request.IngredientCategoryRequest;
 import com.example.restaurant.response.admin.IngredientCategoryAdminResponse;
 import com.example.restaurant.utils.Slugify;
+import com.example.restaurant.utils.TimeConvertUtil;
 
 public class IngredientCategoryMapper {
     public static IngredientCategoryEntity mapToEntity (IngredientCategoryRequest request) {
@@ -20,6 +21,8 @@ public class IngredientCategoryMapper {
         response.setName(entity.getName());
         response.setSlug(entity.getSlug());
         response.setDescription(entity.getDescription());
+        response.setCreateAt(TimeConvertUtil.convertTimestampToDate(entity.getCreatedAt()));
+        response.setUpdateAt(TimeConvertUtil.convertTimestampToDate(entity.getUpdatedAt()));
         return response;
     }
 }

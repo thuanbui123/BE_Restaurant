@@ -8,4 +8,6 @@ public class IngredientCategoryAdminResponse {
     private String name;
     private String slug;
     private String description;
+    private String createAt;
+    private String updateAt;
 }

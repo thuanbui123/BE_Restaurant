@@ -74,7 +74,7 @@ public class FoodCategoryService {
             }
             FoodCategoryEntity entity = FoodCategoryMapper.mapToEntity(request);
             repository.save(entity);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Thêm danh muc thức ăn mới thành công.");
+            return ResponseEntity.status(HttpStatus.CREATED).body("Thêm danh mục thức ăn mới thành công.");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi thêm danh mục thức ăn mới: "+ e.getMessage());
         }

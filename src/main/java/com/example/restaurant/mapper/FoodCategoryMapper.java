@@ -7,6 +7,7 @@ import com.example.restaurant.response.admin.FoodCategoryAdminResponse;
 import com.example.restaurant.response.FoodCategoryUserResponse;
 import com.example.restaurant.service.FoodsService;
 import com.example.restaurant.utils.Slugify;
+import com.example.restaurant.utils.TimeConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -51,6 +52,8 @@ public class FoodCategoryMapper {
         adminResponse.setId(entity.getId());
         adminResponse.setName(entity.getName());
         adminResponse.setDescription(entity.getDescription());
+        adminResponse.setCreateAt(TimeConvertUtil.convertTimestampToDate(entity.getCreatedAt()));
+        adminResponse.setUpdateAt(TimeConvertUtil.convertTimestampToDate(entity.getUpdatedAt()));
         return adminResponse;
     }
 }
