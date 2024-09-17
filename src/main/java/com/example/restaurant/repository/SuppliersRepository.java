@@ -17,5 +17,8 @@ public interface SuppliersRepository extends JpaRepository<SuppliersEntity, Inte
     @Query(value = "select * from suppliers where code = :code", nativeQuery = true)
     SuppliersEntity findOneByCode (@Param("code") String code);
 
+    @Query(value = "select * from suppliers where id = :id", nativeQuery = true)
+    SuppliersEntity findOneById (@Param("id") Integer id);
+
     void deleteByCode(String code);
 }

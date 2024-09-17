@@ -18,6 +18,9 @@ public class IngredientsEntity extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "img")
+    private String img;
+
     @Column(name = "slug")
     private String slug;
 

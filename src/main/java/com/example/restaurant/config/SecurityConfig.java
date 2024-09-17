@@ -53,6 +53,8 @@ public class SecurityConfig {
 
     private final String apiCombosPrefix = ApiConfig.API_COMBOS_PREFIX;
 
+    private final String apiIngredientsPrefix = ApiConfig.API_INGREDIENTS_PREFIX;
+
     final List<Pair<String, String>> bypassTokens = Arrays.asList(
             Pair.of(String.format("%s/authenticate", apiAuthPrefix), "POST"),
             Pair.of(String.format("%s/register", apiAuthPrefix), "POST"),
@@ -95,7 +97,11 @@ public class SecurityConfig {
             Pair.of(String.format("%s/delete/{code}", apiIngredientCategoriesPrefix), "DELETE"),
             Pair.of(String.format("%s/add", apiCombosPrefix), "POST"),
             Pair.of(String.format("%s/update/{code}", apiCombosPrefix), "PUT"),
-            Pair.of(String.format("%s/delete/{code}", apiCombosPrefix), "DELETE")
+            Pair.of(String.format("%s/delete/{code}", apiCombosPrefix), "DELETE"),
+            Pair.of(String.format("%s/{prefix}", apiIngredientsPrefix), "GET"),
+            Pair.of(String.format("%s/add", apiIngredientsPrefix), "POST"),
+            Pair.of(String.format("%s/update/{code}", apiIngredientsPrefix), "PUT"),
+            Pair.of(String.format("%s/delete/{code}", apiIngredientsPrefix), "DELETE")
     );
 
     @Autowired

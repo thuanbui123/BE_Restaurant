@@ -19,6 +19,10 @@ public class SupplierService {
     @Autowired
     private SuppliersRepository repository;
 
+    public SuppliersEntity findOneById (Integer id) {
+        return repository.findOneById(id);
+    }
+
     public ResponseEntity<?> findAll (Pageable pageable) {
         return PaginateUtil.paginate(
                 repository::findAll,
