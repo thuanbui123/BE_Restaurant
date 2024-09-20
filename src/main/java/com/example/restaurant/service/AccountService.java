@@ -62,8 +62,10 @@ public class AccountService implements UserDetailsService {
             AccountDetails accountDetails = loadUserByUsername(authRequest.getUsername());
             String jwt = jwtService.generateToken(accountDetails.getUsername());
             Map<String, Object> response = new HashMap<>();
+            AccountInfo info = findBySlug(accountDetails.getUsername());
             response.put("token", jwt);
             response.put("username", accountDetails.getUsername());
+            response.put("img", info.getImg());
             return ResponseEntity.ok(response);
         } catch (BadCredentialsException e) {
             return new ResponseEntity<>("Tên đăng nhập hoặc mật khẩu không đúng!", HttpStatus.UNAUTHORIZED);
@@ -138,6 +140,11 @@ public class AccountService implements UserDetailsService {
                 pageable,
                 AccountMapper::maToAccountResponse
         );
+    }
+
+    public AccountInfo findBySlug (String query) {
+        final String slug = Slugify.toSlug(query);
+        return repository.findOneBySlug(slug);
     }
 
     public ResponseEntity<?> findData (Integer page, Integer size, String prefix, String query) {
