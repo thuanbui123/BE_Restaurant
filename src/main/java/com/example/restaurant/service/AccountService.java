@@ -7,6 +7,7 @@ import com.example.restaurant.request.RegisterRequest;
 import com.example.restaurant.entity.AccountInfo;
 import com.example.restaurant.mapper.AccountMapper;
 import com.example.restaurant.repository.AccountInfoRepository;
+import com.example.restaurant.response.AccountInfoResponse;
 import com.example.restaurant.utils.PaginateUtil;
 import com.example.restaurant.utils.Slugify;
 import jakarta.transaction.Transactional;
@@ -25,11 +26,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService implements UserDetailsService {
     @Autowired
     private AccountInfoRepository repository;
+
+    @Autowired
+    private EmployeeService service;
 
     @Autowired
     private JwtService jwtService;
@@ -106,6 +111,18 @@ public class AccountService implements UserDetailsService {
         return PaginateUtil.paginate(repository::findAll, pageable, AccountMapper::maToAccountResponse);
     }
 
+    public ResponseEntity<?> findAll () {
+        List<Integer> accountIdList = service.getAccountIdList();
+        List<AccountInfoResponse> responses = repository.findAll().stream()
+                .filter(accountInfo -> !accountIdList.contains(accountInfo.getId()) && accountInfo.getRole().equals("ROLE_EMPLOYEE"))
+                .map(accountInfo -> new AccountInfoResponse(
+                        accountInfo.getId(),
+                        accountInfo.getUsername()
+                ))
+                .toList();
+        return ResponseEntity.ok().body(responses);
+    }
+
     public ResponseEntity<?> findByRole(String role, Pageable pageable) {
         return PaginateUtil.paginate(
                 (pg) -> repository.findByRole(role, pg),
@@ -124,10 +141,13 @@ public class AccountService implements UserDetailsService {
     }
 
     public ResponseEntity<?> findData (Integer page, Integer size, String prefix, String query) {
-        Pageable pageable = PageRequest.of(page, size);
         if ("find-all".equals(prefix) && query == null) {
+            Pageable pageable = PageRequest.of(page, size);
             return findByRole("ROLE_EMPLOYEE", pageable);
+        } else if ("get-accounts".equals(prefix) && query == null) {
+            return findAll();
         } else if ("search".equals(prefix) && query != null) {
+            Pageable pageable = PageRequest.of(page, size);
             return findBySlug(query, pageable);
         }
         return new ResponseEntity<>("API không tồn tại!", HttpStatus.NOT_FOUND);

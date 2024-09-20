@@ -44,6 +44,7 @@ public class EmployeeMapper {
         response.setEmail(entity.getEmail());
         response.setAddress(entity.getAddress());
         response.setImg(entity.getAccount().getImg());
+        response.setAccountId(entity.getAccount().getId());
         response.setCreateAt(TimeConvertUtil.convertTimestampToDate(entity.getCreatedAt()));
         response.setUpdateAt(TimeConvertUtil.convertTimestampToDate(entity.getUpdatedAt()));
         return response;

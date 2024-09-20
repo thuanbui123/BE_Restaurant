@@ -1,5 +1,6 @@
 package com.example.restaurant.service;
 
+import com.example.restaurant.entity.AccountInfo;
 import com.example.restaurant.entity.EmployeeEntity;
 import com.example.restaurant.mapper.EmployeeMapper;
 import com.example.restaurant.repository.EmployeeRepository;
@@ -14,13 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EmployeeService {
     @Autowired
     private EmployeeRepository repository;
-
-    @Autowired
-    private AccountService accountService;
 
     public ResponseEntity<?> findAll (Pageable pageable) {
         return PaginateUtil.paginate(
@@ -38,16 +38,35 @@ public class EmployeeService {
         );
     }
 
+    public List<AccountInfo> findAllAccount () {
+        return repository.findAll().stream()
+                .map(EmployeeEntity::getAccount)
+                .toList();
+    }
+
+    public List<Integer> getAccountIdList () {
+        return findAllAccount().stream()
+                .map(AccountInfo::getId)
+                .toList();
+    }
+
+    public ResponseEntity<?> findOneByCode (String code) {
+        return ResponseEntity.ok().body(EmployeeMapper.mapToResponse(repository.findOneByCode(code)));
+    }
+
     public EmployeeEntity findOneById (Integer employeeId) {
         return repository.findOneById(employeeId);
     }
 
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
-        Pageable pageable = PageRequest.of(page, size);
         if (prefix.equals("find-all") && query == null) {
+            Pageable pageable = PageRequest.of(page, size);
             return findAll(pageable);
         } else if (prefix.equals("search") && query != null) {
+            Pageable pageable = PageRequest.of(page, size);
             return findBySlug(query, pageable);
+        } else if (prefix.equals("find-one-by-code") && query != null) {
+            return findOneByCode(query);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("API không tồn tại!");
     }
@@ -79,7 +98,6 @@ public class EmployeeService {
             existsEntity.setEmail(request.getEmail());
             existsEntity.setPhoneNumber(request.getPhoneNumber());
             existsEntity.setAddress(request.getAddress());
-            existsEntity.setAccount(accountService.findOneById(request.getAccountId()));
             repository.save(existsEntity);
             return ResponseEntity.ok().body("Cập nhât thông tin nhân viên thành công.");
         } catch (Exception e) {
