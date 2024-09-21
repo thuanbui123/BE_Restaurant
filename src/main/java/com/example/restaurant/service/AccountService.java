@@ -66,6 +66,7 @@ public class AccountService implements UserDetailsService {
             response.put("token", jwt);
             response.put("username", accountDetails.getUsername());
             response.put("img", info.getImg());
+            response.put("role", info.getRole());
             return ResponseEntity.ok(response);
         } catch (BadCredentialsException e) {
             return new ResponseEntity<>("Tên đăng nhập hoặc mật khẩu không đúng!", HttpStatus.UNAUTHORIZED);
@@ -88,6 +89,8 @@ public class AccountService implements UserDetailsService {
             Map<String, Object> response = new HashMap<>();
             response.put("token", jwt);
             response.put("username", accountDetails.getUsername());
+            response.put("img", accountInfo.getImg());
+            response.put("role", accountInfo.getRole());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
