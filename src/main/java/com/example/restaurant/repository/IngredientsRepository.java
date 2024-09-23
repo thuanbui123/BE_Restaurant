@@ -17,5 +17,8 @@ public interface IngredientsRepository extends JpaRepository<IngredientsEntity, 
     @Query(value = "select * from ingredients where code = :code", nativeQuery = true)
     IngredientsEntity findOneByCode (@Param("code")String code);
 
+    @Query(value = "select * from ingredients where id = :id", nativeQuery = true)
+    IngredientsEntity findOneById (@Param("id")Integer id);
+
     void deleteByCode(String code);
 }

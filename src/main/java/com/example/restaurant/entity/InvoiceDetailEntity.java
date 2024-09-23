@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table(name = "invoicedetail")
 @Getter
@@ -13,6 +15,9 @@ import lombok.Setter;
 public class InvoiceDetailEntity {
     @EmbeddedId
     private InvoiceDetailId id;
+
+    @Column(name = "code")
+    private String code;
 
     @Column(name = "quantity")
     private Float quantity;
@@ -22,6 +27,9 @@ public class InvoiceDetailEntity {
 
     @Column(name = "note")
     private String note;
+
+    @Column(name = "created_at", updatable = false)
+    private Timestamp createdAt;
 
     @ManyToOne
     @MapsId("ingredientId")

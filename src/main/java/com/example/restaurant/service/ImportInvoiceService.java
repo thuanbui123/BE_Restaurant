@@ -23,6 +23,10 @@ public class ImportInvoiceService {
     @Autowired
     private EmployeeService service;
 
+    public boolean existsById (Integer id) {
+        return repository.existsById(id);
+    }
+
     public ImportInvoiceEntity findOneById (Integer id) {
         return repository.findOneById(id);
     }

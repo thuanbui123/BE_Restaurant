@@ -2,9 +2,7 @@ package com.example.restaurant.entity.EmbeddableId;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -12,6 +10,8 @@ import java.io.Serializable;
 @Setter
 @Getter
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class InvoiceDetailId implements Serializable {
     @Column(name = "ingredientId")
     private Integer ingredientId;

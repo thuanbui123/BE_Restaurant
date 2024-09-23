@@ -29,4 +29,6 @@ public class ApiConfig {
     public static final String API_INGREDIENTS_PREFIX = "/ingredients";
 
     public static final String API_IMPORT_INVOICE_PREFIX = "/import-invoices";
+
+    public static final String API_INVOICE_DETAIL_PREFIX = "/invoice-detail";
 }

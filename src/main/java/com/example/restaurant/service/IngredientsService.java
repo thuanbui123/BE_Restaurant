@@ -39,6 +39,14 @@ public class IngredientsService {
         );
     }
 
+    public IngredientsEntity findById (Integer id) {
+        return repository.findOneById(id);
+    }
+
+    public boolean existsById (Integer id) {
+        return repository.existsById(id);
+    }
+
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
         Pageable pageable = PageRequest.of(page, size);
         if (prefix.equals("find-all") && query == null) {
