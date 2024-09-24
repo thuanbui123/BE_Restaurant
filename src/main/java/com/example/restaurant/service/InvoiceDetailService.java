@@ -146,6 +146,28 @@ public class InvoiceDetailService {
     }
 
     @Transactional
+    public ResponseEntity<?> removeIngredientFromInvoice (String code, Integer ingredientId) {
+        try {
+            List<InvoiceDetailEntity> entities = repository.findByCode(code);
+
+            if (entities == null || entities.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Phiếu nhập nguyên liệu " + code + " không tồn tại!");
+            }
+
+            InvoiceDetailId id = new InvoiceDetailId(ingredientId, entities.get(0).getImportInvoiceEntity().getId());
+
+            if (repository.existsByCodeAndId(code, id)) {
+                repository.deleteByCodeAndId(code, id);
+                return ResponseEntity.ok().body("Xóa nguyên liệu khỏi phiếu nhập thành công.");
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nguyên liệu " + ingredientId + " không tồn tại trong phiếu nhập.");
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @Transactional
     public ResponseEntity<?> updateData (String code, InvoiceDetailRequest request) {
         try {
             List<InvoiceDetailEntity> entities = InvoiceDetailMapper.mapToEntity(request);

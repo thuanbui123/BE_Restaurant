@@ -13,8 +13,8 @@ import java.util.List;
 @Getter
 @Setter
 public class BillEntity extends BaseEntity{
-    @Column(name = "orderedTime")
-    private LocalDateTime orderedTime;
+    @Column(name = "code")
+    private String code;
 
     @Column(name = "totalPrice")
     private Long totalPrice;
@@ -24,9 +24,6 @@ public class BillEntity extends BaseEntity{
 
     @Column(name = "status")
     private String status;
-
-    @Column(name = "paymentMethod")
-    private String paymentMethod;
 
     @ManyToOne
     @JoinColumn(name = "customerId")

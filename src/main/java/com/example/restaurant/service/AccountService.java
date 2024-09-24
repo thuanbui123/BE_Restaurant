@@ -65,6 +65,7 @@ public class AccountService implements UserDetailsService {
             AccountInfo info = findBySlug(accountDetails.getUsername());
             response.put("token", jwt);
             response.put("username", accountDetails.getUsername());
+            response.put("id", info.getId());
             response.put("img", info.getImg());
             response.put("role", info.getRole());
             return ResponseEntity.ok(response);
@@ -89,6 +90,7 @@ public class AccountService implements UserDetailsService {
             Map<String, Object> response = new HashMap<>();
             response.put("token", jwt);
             response.put("username", accountDetails.getUsername());
+            response.put("id", accountInfo.getId());
             response.put("img", accountInfo.getImg());
             response.put("role", accountInfo.getRole());
             return ResponseEntity.ok(response);

@@ -17,5 +17,14 @@ public interface CustomersRepository extends JpaRepository<CustomersEntity, Inte
     @Query(value = "select * from customers where code = :code", nativeQuery = true)
     CustomersEntity findOneByCode (@Param("code") String code);
 
+    @Query(value = "select * from customers where id = :id", nativeQuery = true)
+    CustomersEntity findOneById (@Param("id") Integer id);
+
+    @Query(value = "select * from customers where accountId = :id", nativeQuery = true)
+    CustomersEntity findOneByAccountId (@Param("id") Integer id);
+
+    @Query(value = "select * from customers where name = :name", nativeQuery = true)
+    CustomersEntity findOneByName (@Param("name") String name);
+
     void deleteByCode(String code);
 }

@@ -30,5 +30,7 @@ public interface InvoiceDetailRepository extends JpaRepository<InvoiceDetailEnti
 
     List<InvoiceDetailEntity> findByCode(String code);
 
+    void deleteByCodeAndId (String code, InvoiceDetailId id);
+
     void deleteByCode(String code);
 }

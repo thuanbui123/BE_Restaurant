@@ -22,6 +22,10 @@ public class CustomerService {
     @Autowired
     private AccountService accountService;
 
+    public CustomersEntity findOneById (Integer id) {
+        return repository.findOneById(id);
+    }
+
     public ResponseEntity<?> findAll (Pageable pageable) {
         return PaginateUtil.paginate(
                 repository::findAll,

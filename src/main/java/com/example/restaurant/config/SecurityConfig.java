@@ -59,6 +59,8 @@ public class SecurityConfig {
 
     private final String apiInvoiceDetailPrefix = ApiConfig.API_INVOICE_DETAIL_PREFIX;
 
+    private final String apiBillPrefix = ApiConfig.API_BILL_PREFIX;
+
     final List<Pair<String, String>> bypassTokens = Arrays.asList(
             Pair.of(String.format("%s/authenticate", apiAuthPrefix), "POST"),
             Pair.of(String.format("%s/register", apiAuthPrefix), "POST"),
@@ -114,7 +116,18 @@ public class SecurityConfig {
             Pair.of(String.format("%s/add", apiInvoiceDetailPrefix), "POST"),
             Pair.of(String.format("%s/{code}/add-ingredients", apiInvoiceDetailPrefix), "POST"),
             Pair.of(String.format("%s/update/{code}", apiInvoiceDetailPrefix), "PUT"),
-            Pair.of(String.format("%s/delete/{code}", apiInvoiceDetailPrefix), "DELETE")
+            Pair.of(String.format("%s/delete/{code}", apiInvoiceDetailPrefix), "DELETE"),
+            Pair.of(String.format("%s/{code}/delete-ingredient/{ingredientId}", apiInvoiceDetailPrefix), "DELETE"),
+            Pair.of(String.format("%s/{prefix}", apiBillPrefix), "GET"),
+            Pair.of(String.format("%s/add", apiBillPrefix), "POST"),
+            Pair.of(String.format("%s/update/{code}", apiBillPrefix), "PUT"),
+            Pair.of(String.format("%s/cancel/{code}", apiBillPrefix), "PUT"),
+            Pair.of(String.format("%s/delete/{code}", apiBillPrefix), "DELETE")
+    );
+
+    final List<Pair<String, String>> noBypassTokensUsers = Arrays.asList(
+            Pair.of(String.format("%s/{prefix}", apiBillPrefix), "GET"),
+            Pair.of(String.format("%s/cancel/{code}", apiBillPrefix), "PUT")
     );
 
     @Autowired
@@ -139,6 +152,10 @@ public class SecurityConfig {
 
                     for (Pair<String, String> nobypassToken : noBypassTokens) {
                         auth.requestMatchers(nobypassToken.getSecond(), nobypassToken.getFirst()).hasAuthority("ROLE_EMPLOYEE_ADMIN");
+                    }
+
+                    for (Pair<String, String> nobyPassTokenUser : noBypassTokensUsers) {
+                        auth.requestMatchers(nobyPassTokenUser.getSecond(), nobyPassTokenUser.getFirst()).hasAuthority("ROLE_USER");
                     }
 
                     auth

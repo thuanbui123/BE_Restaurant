@@ -51,6 +51,12 @@ public class InvoiceDetailController {
     }
 
     @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @DeleteMapping("/{code}/delete-ingredient/{ingredientId}")
+    public ResponseEntity<?> removeIngredientFromInvoice (@PathVariable String code, @PathVariable Integer ingredientId) {
+        return service.removeIngredientFromInvoice(code, ingredientId);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
     @PutMapping("/update/{code}")
     public ResponseEntity<?> updateData (@PathVariable String code, @Valid @RequestBody InvoiceDetailRequest request, BindingResult result) {
         if (result.hasErrors()) {

@@ -16,8 +16,8 @@ public interface AccountInfoRepository extends JpaRepository<AccountInfo, Intege
 
     @Query(value = "select * from account where id = :id", nativeQuery = true)
     AccountInfo findOneById (@Param("id") Integer id);
-
-    AccountInfo findOneBySlug(String slug);
+    @Query(value = "select * from account where slug = :slug", nativeQuery = true)
+    AccountInfo findOneBySlug(@Param("slug") String slug);
 
     Page<AccountInfo> findByRole(String role, Pageable pageable);
 
