@@ -19,6 +19,7 @@ public class ImportInvoiceController {
     @Autowired
     private ImportInvoiceService service;
 
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @GetMapping("/{prefix}")
     public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String query) {
         return service.findData(prefix, page, size, query);

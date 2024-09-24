@@ -28,6 +28,10 @@ public class IngredientCategoryService {
         );
     }
 
+    public IngredientCategoryEntity findById(Integer id) {
+        return repository.findOneById(id);
+    }
+
     public ResponseEntity<?> findBySlug (String slug, Pageable pageable) {
         return  PaginateUtil.paginate(
                 (pg) -> repository.findBySlugContainingIgnoreCase(slug, pageable),

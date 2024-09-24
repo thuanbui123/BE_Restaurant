@@ -21,8 +21,11 @@ public class FoodsController {
     private FoodsService service;
 
     @GetMapping("/{prefix}")
-    public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String query) {
-        return service.findData(prefix, page, size, query);
+    public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam(required = false) Integer page,
+                                       @RequestParam(required = false) Integer size, @RequestParam(required = false) String query,
+                                       @RequestParam(required = false, name = "limit-food") Integer limitFood,
+                                       @RequestParam(required = false, name = "account-id") Integer id) {
+        return service.findData(prefix, page, size, query, id, limitFood);
     }
 
     @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")

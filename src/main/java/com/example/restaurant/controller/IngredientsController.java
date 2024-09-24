@@ -20,7 +20,7 @@ public class IngredientsController {
     private IngredientsService service;
 
     @GetMapping("/{prefix}")
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size, @RequestParam(required = false) String query) {
         return service.findData(prefix, page, size, query);
     }

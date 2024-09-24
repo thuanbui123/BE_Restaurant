@@ -1,5 +1,7 @@
 package com.example.restaurant.service;
 
+import com.example.restaurant.entity.AccountInfo;
+import com.example.restaurant.entity.CustomersEntity;
 import com.example.restaurant.entity.FoodsEntity;
 import com.example.restaurant.mapper.FoodsMapper;
 import com.example.restaurant.repository.FoodsRepository;
@@ -22,6 +24,15 @@ public class FoodsService {
     @Autowired
     private FoodsRepository repository;
 
+    @Autowired
+    private RecommendationService recommendationService;
+
+    @Autowired
+    private AccountService accountService;
+
+    @Autowired
+    private CustomerService customerService;
+
     public FoodsEntity findOneById (Integer id) {
         return repository.findOneById(id);
     }
@@ -42,11 +53,17 @@ public class FoodsService {
         );
     }
 
-    public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
-        Pageable pageable = PageRequest.of(page, size);
+    public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query, Integer id, Integer limitFood) {
+
         if (prefix.equals("find-all") && query == null) {
+            Pageable pageable = PageRequest.of(page, size);
             return findAll(pageable);
+        } else if (prefix.equals("get-food-for-user") && query == null) {
+            AccountInfo info = accountService.findOneById(id);
+            CustomersEntity customersEntity = customerService.findOneById(info.getId());
+            return ResponseEntity.ok().body(recommendationService.recommendFoodsForCustomer(customersEntity.getId(), limitFood));
         } else if (prefix.equals("search") && query != null) {
+            Pageable pageable = PageRequest.of(page, size);
             String slug = Slugify.toSlug(query);
             return findBySlug(slug, pageable);
         }

@@ -22,6 +22,7 @@ public class InvoiceDetailController {
     private InvoiceDetailService service;
 
     @GetMapping("/{prefix}")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size, @RequestParam(required = false) String query, @RequestParam(required = false) Integer id) {
         return service.findData(prefix, page, size, query, id);
     }

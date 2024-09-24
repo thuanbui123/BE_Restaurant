@@ -19,13 +19,13 @@ public class BillController {
     @Autowired
     private BillService service;
 
-    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @GetMapping("/{prefix}")
     public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size, @RequestParam(required = false) String query) {
         return service.findData(prefix, page, size, query);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @PostMapping("/add")
     public ResponseEntity<?> addData (@Valid @RequestBody BillRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -37,7 +37,7 @@ public class BillController {
         return service.addData(request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PutMapping("/update/{code}")
     public ResponseEntity<?> updateData (@PathVariable String code, @Valid @RequestBody BillRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -49,7 +49,7 @@ public class BillController {
         return service.updateData(code, request);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @PutMapping("/cancel/{code}")
     public ResponseEntity<?> updateData (@PathVariable String code, @Valid @RequestBody CancelBillRequest request, BindingResult result) {
         if (result.hasErrors()) {
