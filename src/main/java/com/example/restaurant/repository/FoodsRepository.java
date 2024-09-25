@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FoodsRepository extends JpaRepository<FoodsEntity, Integer> {
-    @Query(value = "select * from foods where id like %:id%", nativeQuery = true)
+    @Query(value = "select * from foods where id = %:id%", nativeQuery = true)
     FoodsEntity findOneById (@Param("id") Integer id);
 
     @Query(value = "select * from foods where code like %:code%", nativeQuery = true)

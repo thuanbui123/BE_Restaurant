@@ -51,6 +51,10 @@ public class FoodCategoryService {
         );
     }
 
+    public FoodCategoryEntity findOneById(Integer id) {
+        return repository.findOneById(id);
+    }
+
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
         Pageable pageable = null;
         if (page != null && size != null) {
