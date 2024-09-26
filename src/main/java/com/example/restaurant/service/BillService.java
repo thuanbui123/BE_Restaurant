@@ -1,11 +1,12 @@
 package com.example.restaurant.service;
 
 import com.example.restaurant.entity.BillEntity;
+import com.example.restaurant.entity.BillTableEntity;
 import com.example.restaurant.entity.CustomersEntity;
+import com.example.restaurant.entity.EmbeddableId.BillTableId;
+import com.example.restaurant.entity.TablesEntity;
 import com.example.restaurant.mapper.BillMapper;
-import com.example.restaurant.repository.AccountInfoRepository;
-import com.example.restaurant.repository.BillRepository;
-import com.example.restaurant.repository.CustomersRepository;
+import com.example.restaurant.repository.*;
 import com.example.restaurant.request.BillRequest;
 import com.example.restaurant.request.CancelBillRequest;
 import com.example.restaurant.response.BillResponse;
@@ -31,6 +32,12 @@ public class BillService {
     @Autowired
     AccountInfoRepository accountInfoRepository;
 
+    @Autowired
+    private BillTableService billTableService;
+
+    @Autowired
+    private TablesService tablesService;
+
     public ResponseEntity<?> findAll (Pageable pageable) {
         return PaginateUtil.paginate(
                 repository::findAllBillsSortedByStatusAndCreatedDate,
@@ -47,8 +54,8 @@ public class BillService {
         );
     }
 
-    public BillEntity findOneById (Integer employeeId) {
-        return repository.findOneById(employeeId);
+    public BillEntity findOneById (Integer id) {
+        return repository.findOneById(id);
     }
 
     public ResponseEntity<?> findByStatus (String status, Pageable pageable) {
@@ -120,23 +127,6 @@ public class BillService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hóa đơn " + code + " không tồn tại!");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi cập nhật hóa đơn: "+ e.getMessage());
-        }
-    }
-
-    @Transactional
-    public ResponseEntity<?> deleteData (String code) {
-        try {
-            if (repository.existsByCode(code)) {
-                BillEntity billEntity = repository.findOneByCode(code);
-                if (!billEntity.getStatus().equals("Chờ xử lý")) {
-                    repository.deleteByCode(code);
-                    return ResponseEntity.ok().body("Xóa hóa đơn thành công.");
-                }
-                return ResponseEntity.badRequest().body("Không được xóa hóa đơn khi chưa hoàn thành!");
-            }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hóa đơn " + code + " không tồn tại!");
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Đã có lỗi khi xóa hóa đơn: " + e.getMessage());
         }
     }
 

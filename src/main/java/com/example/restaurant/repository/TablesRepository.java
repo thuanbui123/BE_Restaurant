@@ -13,6 +13,9 @@ public interface TablesRepository extends JpaRepository<TablesEntity, Integer> {
     Page<TablesEntity> findByCodeContainingIgnoreCase(String code, Pageable pageable);
     boolean existsByCode(String code);
 
+    @Query(value = "select * from tables where id = :id", nativeQuery = true)
+    TablesEntity findOneById (@Param("id") Integer id);
+
     @Query(value = "select * from tables where code = :code", nativeQuery = true)
     TablesEntity findOneByCode(@Param("code") String code);
 

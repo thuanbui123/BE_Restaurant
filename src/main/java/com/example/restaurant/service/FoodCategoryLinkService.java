@@ -44,7 +44,7 @@ public class FoodCategoryLinkService {
             FoodCategoryLinkEntity entity = FoodCategoryLinkMapper.mapToEntity(request);
 
             if (entity == null) {
-                return ResponseEntity.badRequest().body("Món ăn hoặc danh món ăn liệu không tồn tại!");
+                return ResponseEntity.badRequest().body("Món ăn hoặc danh mục món ăn không tồn tại!");
             }
             entity.setId(id);
             repository.save(entity);

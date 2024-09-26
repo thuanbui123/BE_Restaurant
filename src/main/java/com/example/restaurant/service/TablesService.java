@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class TablesService {
     @Autowired
@@ -42,6 +44,26 @@ public class TablesService {
             return findByCode(query, pageable);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("API không tồn tại!");
+    }
+
+    public TablesEntity findById (Integer id) {
+        return repository.findOneById(id);
+    }
+
+    @Transactional
+    public boolean updateStatus (Integer tableId) {
+        try {
+            TablesEntity tablesEntity = findById(tableId);
+            if (tablesEntity != null) {
+                tablesEntity.setStatus("Trống");
+                repository.save(tablesEntity);
+                return true;
+            } else {
+                return false; 
+            }
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public ResponseEntity<?> add (TablesRequest request) {

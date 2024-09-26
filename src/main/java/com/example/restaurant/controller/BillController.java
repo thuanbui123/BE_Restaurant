@@ -60,10 +60,4 @@ public class BillController {
         }
         return service.cancelBill(code, request);
     }
-
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
-    @DeleteMapping("/delete/{code}")
-    public ResponseEntity<?> deleteData (@PathVariable  String code) {
-        return service.deleteData(code);
-    }
 }
