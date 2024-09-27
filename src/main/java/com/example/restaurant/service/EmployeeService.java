@@ -22,6 +22,10 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository repository;
 
+    public boolean existsById (Integer id) {
+        return repository.existsById(id);
+    }
+
     public ResponseEntity<?> findAll (Pageable pageable) {
         return PaginateUtil.paginate(
                 repository::findAll,

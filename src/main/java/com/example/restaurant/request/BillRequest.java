@@ -20,8 +20,6 @@ public class BillRequest {
     @Min(value = 1, message = "Mã khách hàng phải lớn hơn 0!")
     private Integer customerId;
 
-    private Long totalPrice = 0L;
-
     private String status = "Chờ xử lý";
 
     private String note;

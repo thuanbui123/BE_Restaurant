@@ -32,11 +32,9 @@ public class BillService {
     @Autowired
     AccountInfoRepository accountInfoRepository;
 
-    @Autowired
-    private BillTableService billTableService;
-
-    @Autowired
-    private TablesService tablesService;
+    public boolean existsById (Integer id) {
+        return repository.existsById(id);
+    }
 
     public ResponseEntity<?> findAll (Pageable pageable) {
         return PaginateUtil.paginate(
@@ -100,9 +98,9 @@ public class BillService {
                 return ResponseEntity.badRequest().body("Nhân viên hoặc khách hàng tồn tại!");
             }
             repository.save(entity);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Thêm hóa đơn thành công.");
+            return ResponseEntity.status(HttpStatus.CREATED).body("Thêm  đơn hàng thành công.");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi thêm hóa đơn mới: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi thêm đơn hàng mới: " + e.getMessage());
         }
     }
 
@@ -118,15 +116,14 @@ public class BillService {
                     existsBill.setCustomer(billEntityRequest.getCustomer());
                     existsBill.setStatus(billEntityRequest.getStatus());
                     existsBill.setNote(billRequest.getNote());
-                    existsBill.setTotalPrice(billRequest.getTotalPrice());
                     repository.save(existsBill);
-                    return ResponseEntity.ok().body("Cập nhật hóa đơn thành công.");
+                    return ResponseEntity.ok().body("Cập nhật đơn hàng thành công.");
                 }
-                return ResponseEntity.badRequest().body("Hóa đơn có trạng thái khác \"Chờ xử lý\" không được phép sửa!");
+                return ResponseEntity.badRequest().body("Đơn hàng \"đã thanh toán\" hoặc \"đã hủy\" không được phép sửa!");
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hóa đơn " + code + " không tồn tại!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Đơn hàng " + code + " không tồn tại!");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi cập nhật hóa đơn: "+ e.getMessage());
+            return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi cập nhật đơn hàng: "+ e.getMessage());
         }
     }
 
@@ -139,13 +136,13 @@ public class BillService {
                     existsBill.setStatus("Đã hủy");
                     existsBill.setNote(request.getNote());
                     repository.save(existsBill);
-                    return ResponseEntity.ok().body("Hóa đơn " + code + " hủy thành công.");
+                    return ResponseEntity.ok().body("Đơn hàng " + code + " hủy thành công.");
                 }
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không được hủy hóa đơn khi đã hoàn thành!");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không được hủy đơn hàng khi đã thanh toán!");
             }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hóa đơn " + code + " không tồn tại!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Đơn hàng " + code + " không tồn tại!");
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Đã có lỗi khi hủy hóa đơn: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("Đã có lỗi khi hủy đơn hàng: " + e.getMessage());
         }
     }
 }

@@ -35,7 +35,7 @@ public class BillMapper {
 
         entity.setEmployee(employee);
         entity.setCustomer(customersEntity);
-        entity.setTotalPrice(request.getTotalPrice());
+        entity.setTotalPrice(0L);
         entity.setStatus(request.getStatus());
         entity.setNote(request.getNote());
 

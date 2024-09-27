@@ -41,4 +41,6 @@ public class ApiConfig {
     public static final String API_BILL_TABLE_LINK_PREFIX = "bill-table-link";
 
     public static final String API_COMBO_FOOD_PREFIX = "/combo-food";
+
+    public static final String API_COMBO_ORDERED_PREFIX = "/combo-ordered";
 }

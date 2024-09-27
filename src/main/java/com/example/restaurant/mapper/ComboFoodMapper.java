@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class ComboFoodMapper {
@@ -77,6 +78,7 @@ public class ComboFoodMapper {
         response.setComboName(entities.get(0).getCombo().getName());
         response.setDescription(entities.get(0).getCombo().getDescription());
         response.setImg(entities.get(0).getCombo().getImg());
+        AtomicLong totalPrice = new AtomicLong(0L);
         response.setFoodDetailResponses(entities.stream()
                 .map(entity -> {
                     ComboFoodDetailResponse comboFoodDetailResponse = new ComboFoodDetailResponse();
@@ -86,6 +88,7 @@ public class ComboFoodMapper {
                     comboFoodDetailResponse.setName(entity.getFood().getName());
                     comboFoodDetailResponse.setPrice(entity.getFood().getPrice());
                     comboFoodDetailResponse.setDescription(entity.getFood().getDescription());
+                    totalPrice.getAndSet(totalPrice.get() + entity.getTotalPrice());
                     comboFoodDetailResponse.setAmountOfFood(entity.getAmountOfFood());
                     return comboFoodDetailResponse;
                 })
@@ -93,7 +96,7 @@ public class ComboFoodMapper {
         );
         response.setStatus(entities.get(0).getCombo().getStatus());
 
-        response.setTotalPrice(entities.get(0).getTotalPrice());
+        response.setTotalPrice(totalPrice.get());
         return response;
     }
 }

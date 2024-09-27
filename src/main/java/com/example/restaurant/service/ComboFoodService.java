@@ -73,7 +73,7 @@ public class ComboFoodService {
             }
             AtomicLong totalPrice = new AtomicLong(0L);
             for (ComboFoodEntity entity : entities) {
-                totalPrice.getAndSet(totalPrice.get() + entity.getTotalPrice());
+                totalPrice.getAndSet(totalPrice.get() + entity.getTotalPrice() * entity.getAmountOfFood());
             }
             exists.setPrice(totalPrice.get());
             comboRepository.save(exists);
