@@ -50,14 +50,6 @@ public class ComboOrderedMapper {
 
     public static ComboOrderedResponse mapToResponse (List<ComboOrderEntity> entities) {
         ComboOrderedResponse response = new ComboOrderedResponse();
-        BillEntity billEntity = billService.findOneById(entities.get(0).getBill().getId());
-        response.setBillCode(billEntity.getCode());
-        response.setBillId(billEntity.getId());
-        response.setBillNote(billEntity.getNote());
-        response.setBillStatus(billEntity.getStatus());
-        response.setBillTotalPrice(billEntity.getTotalPrice());
-        response.setCustomerName(billEntity.getCustomer().getName());
-        response.setEmployeeName(billEntity.getEmployee().getName());
         response.setComboResponses(entities.stream()
                 .map(entity -> {
                     ComboOrderedDetailResponse detailResponse = new ComboOrderedDetailResponse();

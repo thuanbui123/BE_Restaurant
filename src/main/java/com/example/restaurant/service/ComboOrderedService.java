@@ -50,7 +50,7 @@ public class ComboOrderedService {
         try {
             for (ComboOrderedDetailRequest comboRequest : request.getRequests()) {
                 if (repository.existsById(new ComboOrderedId(comboRequest.getComboId(), request.getBillId()))) {
-                    return ResponseEntity.badRequest().body("Combo món ăn có mã: " + comboRequest.getComboId() + " đã tồn tại trong bill có mã: " + request.getBillId());
+                    return ResponseEntity.badRequest().body("Combo món ăn có mã: " + comboRequest.getComboId() + " đã tồn tại trong đơn hàng có mã: " + request.getBillId());
                 }
             }
             List<ComboOrderEntity> entities = ComboOrderedMapper.mapToEntity(request);
@@ -58,10 +58,10 @@ public class ComboOrderedService {
             AtomicLong totalPrice = new AtomicLong(0L);
             for (ComboOrderEntity entity : entities) {
                 if (!entity.getCombo().getStatus().equals("Đang áp dụng")) {
-                    return ResponseEntity.badRequest().body("Không được thêm combo món ăn có trạng thái khác đang áp dụng vào bill");
+                    return ResponseEntity.badRequest().body("Không được thêm combo món ăn có trạng thái khác đang áp dụng vào đơn hàng!");
                 }
                 if (!entity.getBill().getStatus().equals("Chờ xử lý")) {
-                    return ResponseEntity.badRequest().body("Không được thêm combo món ăn vào hóa đơn có trạng thái đã thanh toán hoặc đã hủy");
+                    return ResponseEntity.badRequest().body("Không được thêm combo món ăn vào đơn hàng có trạng thái đã thanh toán hoặc đã hủy!");
                 }
                 totalPrice.getAndSet(totalPrice.get() + entity.getTotalPrice());
                 ComboEntity existsCombo = comboRepository.findOneById(entity.getCombo().getId());
@@ -88,7 +88,7 @@ public class ComboOrderedService {
         try {
             for (ComboOrderedDetailRequest comboRequest : request.getRequests()) {
                 if (!repository.existsById(new ComboOrderedId(comboRequest.getComboId(), request.getBillId()))) {
-                    return ResponseEntity.badRequest().body("Combo món ăn có mã: " + comboRequest.getComboId() + " không tồn tại trong bill có mã: " + request.getBillId());
+                    return ResponseEntity.badRequest().body("Combo món ăn có mã: " + comboRequest.getComboId() + " không tồn tại trong đơn hàng có mã: " + request.getBillId());
                 }
             }
             List<ComboOrderEntity> entities = ComboOrderedMapper.mapToEntity(request);
@@ -110,7 +110,7 @@ public class ComboOrderedService {
 
             billRepository.save(existsEntity);
 
-            return ResponseEntity.status(HttpStatus.OK).body("Xóa combo món ăn vào đơn hàng thành công.");
+            return ResponseEntity.status(HttpStatus.OK).body("Xóa combo món ăn khỏi đơn hàng thành công.");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }

@@ -43,4 +43,6 @@ public class ApiConfig {
     public static final String API_COMBO_FOOD_PREFIX = "/combo-food";
 
     public static final String API_COMBO_ORDERED_PREFIX = "/combo-ordered";
+
+    public static final String API_FOOD_ORDERED_PREFIX = "/food-order";
 }
