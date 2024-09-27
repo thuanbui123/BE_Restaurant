@@ -20,7 +20,6 @@ public class ComboController {
     @Autowired
     private ComboService service;
 
-    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @GetMapping("/{prefix}")
     public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size, @RequestParam(required = false) String query) {
         return service.findData(prefix, page, size, query);

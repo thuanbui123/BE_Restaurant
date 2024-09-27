@@ -37,6 +37,10 @@ public class FoodsService {
         return repository.findOneById(id);
     }
 
+    public boolean existsById (Integer id) {
+        return repository.existsById(id);
+    }
+
     public ResponseEntity<?> findAll (Pageable pageable) {
         return PaginateUtil.paginate(
                 repository::findAll,

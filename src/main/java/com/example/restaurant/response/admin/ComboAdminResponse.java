@@ -1,9 +1,11 @@
-package com.example.restaurant.response;
+package com.example.restaurant.response.admin;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
-public class ComboResponse {
+public class ComboAdminResponse {
     private Integer id;
     private String code;
     private String name;
@@ -14,4 +16,6 @@ public class ComboResponse {
     private Integer soldCount;
     private String validFrom;
     private String validTo;
+    private String createAt;
+    private String updateAt;
 }

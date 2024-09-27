@@ -39,4 +39,6 @@ public class ApiConfig {
     public static final String API_FOOD_CATEGORY_LINK_PREFIX = "food-category-link";
 
     public static final String API_BILL_TABLE_LINK_PREFIX = "bill-table-link";
+
+    public static final String API_COMBO_FOOD_PREFIX = "/combo-food";
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -28,6 +29,22 @@ public class ComboEntity extends BaseEntity{
 
     @Column(name = "description")
     private String description;
+
+    // Cột status để kiểm soát trạng thái (1: active, 0: inactive)
+    @Column(name = "status", nullable = false)
+    private String status;
+
+    // Cột sold_count để lưu số lượng combo đã bán
+    @Column(name = "sold_count", nullable = false, columnDefinition = "INT DEFAULT 0")
+    private Integer soldCount;
+
+    // Thời gian bắt đầu áp dụng combo
+    @Column(name = "valid_from")
+    private Timestamp validFrom;
+
+    // Thời gian kết thúc áp dụng combo
+    @Column(name = "valid_to")
+    private Timestamp validTo;
 
     @ManyToMany
     @JoinTable(

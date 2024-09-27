@@ -12,18 +12,37 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ComboService {
     @Autowired
     private ComboRepository repository;
+    /*
+    * Lập lịch hàng ngày vào lúc 0:00
+    * Chỉ chạy khi ứng dụng run
+    * Sau deploy lên server thì hàm sẽ được chạy vào lúc 0:00 hàng ngày và khi server đang chạy
+    */
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void updateComboStatuses() {
+        repository.activateCombos();
+        repository.deactivateExpiredCombos();
+    }
 
     public ResponseEntity<?> findAll (Pageable pageable) {
         return PaginateUtil.paginate(
                 repository::findAll,
                 pageable,
                 ComboMapper::mapToResponse);
+    }
+
+    public ResponseEntity<?> findAllUser (Pageable pageable) {
+        return PaginateUtil.paginate(
+                repository::findAll,
+                pageable,
+                ComboMapper::mapToUserResponse);
     }
 
     public ResponseEntity<?> findBySlug (String slug, Pageable pageable) {
@@ -34,13 +53,23 @@ public class ComboService {
         );
     }
 
+    public boolean existsById (Integer id) {
+        return repository.existsById(id);
+    }
+
+    public ComboEntity findOneById (Integer id) {
+        return repository.findOneById(id);
+    }
+
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
         Pageable pageable =  PageRequest.of(page, size);
         if (prefix.equals("find-all") && query == null) {
-            return new ResponseEntity<>(findAll(pageable), HttpStatus.OK);
+            return findAll(pageable);
         } else if (prefix.equals("search") && query != null) {
             final String slug = Slugify.toSlug(query);
-            return new ResponseEntity<>(findBySlug(slug, pageable), HttpStatus.OK);
+            return findBySlug(slug, pageable);
+        } else if (prefix.equals("find-all-user") && query == null) {
+            return findAllUser(pageable);
         }
         return new ResponseEntity<>("API không tồn tại!", HttpStatus.NOT_FOUND);
     }
@@ -66,9 +95,11 @@ public class ComboService {
             if (existsEntity == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Combo thức ăn không tồn tại!");
             }
+            if (existsEntity.getStatus().equals("Đã hết hạn") || existsEntity.getStatus().equals("Đang áp dụng")) {
+                return ResponseEntity.badRequest().body("Không được thay đổi khi combo món ăn đã hết hạn hoặc đang áp dụng!");
+            }
             existsEntity.setName(request.getName());
             existsEntity.setImg(request.getImg());
-            existsEntity.setPrice(request.getPrice());
             existsEntity.setDescription(request.getDescription());
             existsEntity.setSlug(slug);
             repository.save(existsEntity);
@@ -84,6 +115,9 @@ public class ComboService {
             ComboEntity entity = repository.findOneByCode(code);
             if (entity == null) {
                 return new ResponseEntity<>("Combo thức ăn không tồn tại!", HttpStatus.NOT_FOUND);
+            }
+            if (entity.getStatus().equals("Đã hết hạn") || entity.getStatus().equals("Đang áp dụng")) {
+                return ResponseEntity.badRequest().body("Không được xóa khi combo món ăn đã hết hạn hoặc đang áp dụng!");
             }
             repository.deleteByCode(code);
             return ResponseEntity.ok().body("Xóa combo thức ăn thành công.");

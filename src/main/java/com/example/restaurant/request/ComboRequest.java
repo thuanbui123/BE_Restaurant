@@ -18,10 +18,18 @@ public class ComboRequest {
     @NotBlank(message = "Ảnh của combo món ăn là một trường dữ liệu bắt buộc!")
     private String img;
 
-    @NotNull(message = "Giá của combo món ăn không được để trống")
-    @Min(value = 1, message = "Giá của combo món ăn phải lớn hơn 0")
-    private Long price;
-
     @NotBlank(message = "Mô tả combo món ăn là một trường dữ liệu bắt buộc!")
     private String description;
+
+    @NotNull(message = "Số lượng bán là một trường bắt buộc!")
+    @Min(value = 1, message = "Số lượng bán phải lớn hơn 0!")
+    private Integer soldCount;
+
+    @NotBlank(message = "Ngày có hiệu lực bán combo món ăn là một trường bắt buộc!")
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Ngày có hiệu lực phải có định dạng yyyy-MM-dd")
+    private String validFrom;
+
+    @NotBlank(message = "Ngày hết hiệu lực bán combo món ăn là một trường bắt buộc!")
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Ngày hết hiệu lực phải có định dạng yyyy-MM-dd")
+    private String validTo;
 }

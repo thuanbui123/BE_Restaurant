@@ -28,4 +28,7 @@ public class ComboFoodEntity {
     @JoinColumn(name = "foodId")
     @JsonBackReference
     private FoodsEntity food;
+
+    @Column(name = "totalPrice")
+    private Long totalPrice;
 }
