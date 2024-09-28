@@ -130,12 +130,8 @@ public class AccountService implements UserDetailsService {
         return ResponseEntity.ok().body(responses);
     }
 
-    public ResponseEntity<?> findByRole(String role, Pageable pageable) {
-        return PaginateUtil.paginate(
-                (pg) -> repository.findByRole(role, pg),
-                pageable,
-                AccountMapper::maToAccountResponse
-        );
+    public ResponseEntity<?> findByRole(String role) {
+        return ResponseEntity.ok().body(repository.findByRole(role));
     }
 
     public ResponseEntity<?> findBySlug (String query, Pageable pageable) {
@@ -153,14 +149,15 @@ public class AccountService implements UserDetailsService {
     }
 
     public ResponseEntity<?> findData (Integer page, Integer size, String prefix, String query) {
-        if ("find-all".equals(prefix) && query == null) {
-            Pageable pageable = PageRequest.of(page, size);
-            return findByRole("ROLE_EMPLOYEE", pageable);
+        if ("get-account-employee".equals(prefix) && query == null) {
+            return findByRole("ROLE_EMPLOYEE");
         } else if ("get-accounts".equals(prefix) && query == null) {
             return findAll();
         } else if ("search".equals(prefix) && query != null) {
             Pageable pageable = PageRequest.of(page, size);
             return findBySlug(query, pageable);
+        } else if ("get-accounts-user".equals(prefix) && query == null) {
+            return findByRole("ROLE_USER");
         }
         return new ResponseEntity<>("API không tồn tại!", HttpStatus.NOT_FOUND);
     }

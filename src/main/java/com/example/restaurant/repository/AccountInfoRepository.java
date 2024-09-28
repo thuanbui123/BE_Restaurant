@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,7 +20,7 @@ public interface AccountInfoRepository extends JpaRepository<AccountInfo, Intege
     @Query(value = "select * from account where slug = :slug", nativeQuery = true)
     AccountInfo findOneBySlug(@Param("slug") String slug);
 
-    Page<AccountInfo> findByRole(String role, Pageable pageable);
+    List<AccountInfo> findByRole(String role);
 
     Page<AccountInfo> findBySlugContainingIgnoreCaseAndRole (String slug, String role, Pageable pageable);
 }

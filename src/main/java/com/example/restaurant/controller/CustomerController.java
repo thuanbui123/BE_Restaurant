@@ -20,7 +20,7 @@ public class CustomerController {
 
     @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
     @GetMapping("/{prefix}")
-    public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String query) {
+    public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size, @RequestParam(required = false) String query) {
         return service.findData(prefix, page, size, query);
     }
 
