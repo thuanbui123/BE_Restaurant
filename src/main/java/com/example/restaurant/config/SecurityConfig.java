@@ -75,6 +75,8 @@ public class SecurityConfig {
 
     private final String apiTableBookingPrefix = ApiConfig.API_TABLE_BOOKING_PREFIX;
 
+    private final String apiCustomerFoodReviewPrefix = ApiConfig.API_CUSTOMER_FOOD_REVIEW_PREFIX;
+
     final List<Pair<String, String>> bypassTokens = Arrays.asList(
             Pair.of(String.format("%s/authenticate", apiAuthPrefix), "POST"),
             Pair.of(String.format("%s/register", apiAuthPrefix), "POST"),
@@ -88,7 +90,8 @@ public class SecurityConfig {
             Pair.of(String.format("%s/{prefix}", apiComboFoodPrefix), "GET"),
             Pair.of(String.format("%s/{prefix}", apiComboOrderedPrefix), "GET"),
             Pair.of(String.format("%s/{prefix}", apiFoodOrderedPrefix), "GET"),
-            Pair.of(String.format("%s/{prefix}", apiTableBookingPrefix), "GET")
+            Pair.of(String.format("%s/{prefix}", apiTableBookingPrefix), "GET"),
+            Pair.of(String.format("%s/{prefix}", apiCustomerFoodReviewPrefix), "GET")
     );
 
     final List<Pair<String, String>> noBypassTokens = Arrays.asList(
@@ -146,7 +149,8 @@ public class SecurityConfig {
             Pair.of(String.format("%s/delete", apiFoodOrderedPrefix), "DELETE"),
             Pair.of(String.format("%s/add", apiTableBookingPrefix), "POST"),
             Pair.of(String.format("%s/update/{id}", apiTableBookingPrefix), "PUT"),
-            Pair.of(String.format("%s/cancel-table-booking/{id}", apiTableBookingPrefix), "PUT")
+            Pair.of(String.format("%s/cancel-table-booking/{id}", apiTableBookingPrefix), "PUT"),
+            Pair.of(String.format("%s/add", apiCustomerFoodReviewPrefix), "POST")
     );
 
     final List<Pair<String, String>> noBypassTokenAdmins = Arrays.asList(

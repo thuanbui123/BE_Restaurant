@@ -1,6 +1,8 @@
 package com.example.restaurant.repository;
 
 import com.example.restaurant.entity.CustomerFoodReviewEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,8 +15,8 @@ public interface CustomerFoodReviewRepository extends JpaRepository<CustomerFood
     @Query(value = "select * from customerfoodreview where customerId = :id", nativeQuery = true)
     List<CustomerFoodReviewEntity> findByCustomerId(@Param("id") Integer id);
 
-    @Query(value = "select * from customerfoodreview where foodId = :id", nativeQuery = true)
-    List<CustomerFoodReviewEntity> findByFoodId (@Param("id") Integer id);
+    @Query(value = "select * from customerfoodreview where foodId = :id order by created_at desc", nativeQuery = true)
+    Page<CustomerFoodReviewEntity> findByFoodId (@Param("id") Integer id, Pageable pageable);
 
     @Query(value = "SELECT foodId AS foodId, AVG(quantityStars) AS avgQuantityStars" +
             " FROM customerfoodreview " +
