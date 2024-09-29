@@ -22,7 +22,7 @@ public class TablesService {
 
     public ResponseEntity<?> findAll (Pageable pageable) {
         return PaginateUtil.paginate(
-                repository::findAll,
+                repository::findAllTable,
                 pageable,
                 TableMapper::mapToResponse
         );

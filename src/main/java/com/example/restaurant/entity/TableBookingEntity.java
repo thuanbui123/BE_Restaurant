@@ -27,8 +27,8 @@ public class TableBookingEntity extends BaseEntity{
     @Column(name = "bookingTime")
     private LocalDateTime bookingTime;
 
-    @Column(name = "estimatedUsageTime")
-    private LocalDateTime estimatedUsageTime;
+    @Column(name = "intervalTime")
+    private String intervalTime;
 
     @Column(name = "status")
     private String status;

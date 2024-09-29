@@ -11,7 +11,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TablesRepository extends JpaRepository<TablesEntity, Integer> {
     Page<TablesEntity> findByCodeContainingIgnoreCase(String code, Pageable pageable);
+
+    @Query(value = "select * from tables where code <> 'TBL000'", nativeQuery = true)
+    Page<TablesEntity> findAllTable (Pageable pageable);
+
     boolean existsByCode(String code);
+
+    @Query(value = "select count(*) from tables where code <> 'TBL000'", nativeQuery = true)
+    Integer totalTable();
 
     @Query(value = "select * from tables where id = :id", nativeQuery = true)
     TablesEntity findOneById (@Param("id") Integer id);
