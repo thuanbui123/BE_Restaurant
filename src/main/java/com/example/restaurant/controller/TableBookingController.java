@@ -39,18 +39,6 @@ public class TableBookingController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateData (@PathVariable Integer id, @Valid @RequestBody TableBookingRequest request, BindingResult result) {
-        if (result.hasErrors()) {
-            String errors = result.getAllErrors().stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(new ErrorResponse(errors));
-        }
-        return service.updateData(id, request);
-    }
-
-    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @PutMapping("/cancel-table-booking/{id}")
     public ResponseEntity<?> cancelTableBooking (@PathVariable Integer id, @Valid @RequestBody TableBookingRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -60,5 +48,18 @@ public class TableBookingController {
             return ResponseEntity.badRequest().body(new ErrorResponse(errors));
         }
         return service.cancelData(id, request);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE')")
+    @PutMapping("/check-in-reservation/{tableBookingId}")
+    public ResponseEntity<?> checkInReservation (@PathVariable Integer tableBookingId, @RequestParam(name = "table-id") Integer tableId) {
+        return service.checkInReservation(tableBookingId, tableId);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE')")
+    @PutMapping("/change-table/{tableBookingId}")
+    public ResponseEntity<?> changeTable (@PathVariable Integer tableBookingId,
+                                          @RequestParam(name = "new-table-id") Integer newTableId) {
+        return service.changeTable(newTableId, tableBookingId);
     }
 }

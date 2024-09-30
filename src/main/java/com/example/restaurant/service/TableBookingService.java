@@ -1,6 +1,7 @@
 package com.example.restaurant.service;
 
 import com.example.restaurant.entity.TableBookingEntity;
+import com.example.restaurant.entity.TablesEntity;
 import com.example.restaurant.mapper.TableBookingMapper;
 import com.example.restaurant.repository.CustomersRepository;
 import com.example.restaurant.repository.TableBookingRepository;
@@ -25,7 +26,7 @@ public class TableBookingService {
     private TablesRepository tablesRepository;
 
     @Autowired
-    private CustomersRepository customersRepository;
+    private EmailService emailService;
 
     private ResponseEntity<?> findByStatus (String status, Pageable pageable) {
         return PaginateUtil.paginate(
@@ -65,6 +66,7 @@ public class TableBookingService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("API không tồn tại!");
     }
 
+    @Transactional
     public ResponseEntity<?> addData (TableBookingRequest request) {
         try {
             TableBookingEntity exists = repository.findByCustomerIdAndStatus(request.getCustomerId(), "Đã đặt bàn");
@@ -75,39 +77,18 @@ public class TableBookingService {
             if (exists != null) {
                 return ResponseEntity.badRequest().body("Khách hàng đang dùng bữa tại nhà hàng!");
             }
-            Integer countTableBooking = repository.countTableBooking(request.getBookingTime());
-            Integer totalTable = tablesRepository.totalTable();
-            if (countTableBooking == Math.ceil(0.3 * totalTable)) {
-                return ResponseEntity.badRequest().body("Bàn đã được đặt hết trong khung giờ: " + request.getBookingTime() + "!");
-            }
             TableBookingEntity entity = TableBookingMapper.mapToEntity(request);
             repository.save(entity);
+            String mailBody = "Kính gửi " + entity.getCustomer().getName() + ",\n\n" +
+                    "Chúng tôi xin chân thành cảm ơn Quý khách đã lựa chọn nhà hàng của chúng tôi cho buổi tiệc sắp tới!\n" +
+                    "Quý khách đã đặt bàn vào lúc: " + entity.getBookingTime() + ".\n" +
+                    "Đội ngũ của chúng tôi rất háo hức được chào đón và phục vụ Quý khách. Chúng tôi sẽ chuẩn bị mọi thứ để mang đến cho Quý khách một trải nghiệm ẩm thực tuyệt vời.\n\n" +
+                    "Nếu có bất kỳ yêu cầu nào hoặc cần điều chỉnh thời gian đặt bàn, xin vui lòng liên hệ với chúng tôi. Chúng tôi luôn sẵn sàng hỗ trợ Quý khách.\n\n" +
+                    "Trân trọng,\n" +
+                    "Quán nhậu tự do,\n" +
+                    "Miếng nào to thì gắp";
+            emailService.sendEmail(entity.getCustomer().getEmail(), "Thông tin đặt bàn tại quán nhậu tự do", mailBody);
             return ResponseEntity.ok().body("Đặt bàn thành công.");
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-    }
-
-    @Transactional
-    public ResponseEntity<?> updateData (Integer id, TableBookingRequest request) {
-        try {
-            if (!repository.existsById(id)) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tồn tại phiếu đặt bàn có mã: " + id);
-            }
-            TableBookingEntity exists = repository.findOneById(id);
-            if (!exists.getStatus().equals("Đã đặt bàn")) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không được sửa phiếu đặt bàn có trạng thái khác trạng thái đã đặt bàn!");
-            }
-            Integer countTableBooking = repository.countTableBooking(request.getBookingTime());
-            Integer totalTable = tablesRepository.totalTable();
-            if (countTableBooking == Math.ceil(0.3 * totalTable)) {
-                return ResponseEntity.badRequest().body("Bàn đã được đặt hết trong khung giờ: " + request.getBookingTime() + "!");
-            }
-            exists.setCustomer(customersRepository.findOneById(request.getCustomerId()));
-            exists.setBookingTime(request.getBookingTime());
-            exists.setNote(request.getNote());
-            repository.save(exists);
-            return ResponseEntity.ok().body("Sửa phiếu đặt bàn thành công.");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -120,8 +101,8 @@ public class TableBookingService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tồn tại phiếu đặt bàn có mã: " + id);
             }
             TableBookingEntity exists = repository.findOneById(id);
-            if (!exists.getStatus().equals("Đã đặt bàn")) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không được hủy phiếu đặt bàn có trạng thái khác trạng thái đã đặt bàn!");
+            if (!exists.getStatus().equalsIgnoreCase("Đã đặt bàn")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không được hủy phiếu đặt bàn đã hoàn thành hoặc khách hàng đã đến nhận bàn!");
             }
             exists.setStatus("Đã hủy");
             exists.setNote(request.getNote());
@@ -129,6 +110,61 @@ public class TableBookingService {
             return ResponseEntity.ok().body("Hủy đặt bàn thành công.");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<?> checkInReservation (Integer tableBookingId, Integer tableId) {
+        try {
+            TableBookingEntity entity = repository.findOneById(tableBookingId);
+            if(entity == null) {
+                return ResponseEntity.badRequest().body("Không tồn tại đơn đặt bàn: " + tableBookingId);
+            }
+            if (entity.getTablesEntity().getId() != 1) {
+                return ResponseEntity.badRequest().body("Khách hàng đã hoặc đang dùng bữa tại nhà hàng!");
+            }
+            if (!tablesRepository.existsById(tableId)) {
+                return ResponseEntity.badRequest().body("Không tồn tại bàn ăn có mã: " + tableId + "!");
+            }
+            TablesEntity tablesEntity = tablesRepository.findOneById(tableId);
+            if (tablesEntity.getStatus().equalsIgnoreCase("Đang phục vụ")) {
+                return ResponseEntity.badRequest().body("Bàn ăn có mã: " + tableId + " đang phục vụ khách hàng!");
+            }
+            tablesEntity.setStatus("Đang phục vụ");
+            tablesRepository.save(tablesEntity);
+            entity.setStatus("Khách nhận bàn");
+            entity.setTablesEntity(tablesEntity);
+            repository.save(entity);
+            return ResponseEntity.ok().body(tableId);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<?> changeTable (Integer newTable, Integer tableBookingId) {
+        try {
+            TableBookingEntity tableBooking = repository.findOneById(tableBookingId);
+            if (tableBooking == null) {
+                return ResponseEntity.badRequest().body("Chuyển bàn thất bại!");
+            }
+            TablesEntity currentTableEntity = tableBooking.getTablesEntity();
+            TablesEntity newTableEntity = tablesRepository.findOneById(newTable);
+            if (newTableEntity == null) {
+                return ResponseEntity.badRequest().body("Không tồn tại bàn ăn có mã: " + newTable);
+            }
+            if (!newTableEntity.getStatus().equalsIgnoreCase("Trống")) {
+                return ResponseEntity.badRequest().body("Bàn ăn " + newTable + " đã được xếp!");
+            }
+            tableBooking.setTablesEntity(newTableEntity);
+            repository.save(tableBooking);
+            currentTableEntity.setStatus("Trống");
+            tablesRepository.save(currentTableEntity);
+            newTableEntity.setStatus("Đang phục vụ");
+            tablesRepository.save(newTableEntity);
+            return ResponseEntity.ok().body("Chuyển bàn thành công!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

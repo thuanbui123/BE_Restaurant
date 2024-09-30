@@ -148,7 +148,6 @@ public class SecurityConfig {
             Pair.of(String.format("%s/add", apiFoodOrderedPrefix), "POST"),
             Pair.of(String.format("%s/delete", apiFoodOrderedPrefix), "DELETE"),
             Pair.of(String.format("%s/add", apiTableBookingPrefix), "POST"),
-            Pair.of(String.format("%s/update/{id}", apiTableBookingPrefix), "PUT"),
             Pair.of(String.format("%s/cancel-table-booking/{id}", apiTableBookingPrefix), "PUT"),
             Pair.of(String.format("%s/add", apiCustomerFoodReviewPrefix), "POST")
     );
@@ -167,6 +166,11 @@ public class SecurityConfig {
             Pair.of(String.format("%s/{prefix}", apiIngredientsPrefix), "GET"),
             Pair.of(String.format("%s/update/{code}", apiBillPrefix), "PUT"),
             Pair.of(String.format("%s/{prefix}", apiIngredientCategoryLinkPrefix), "GET")
+    );
+
+    final List<Pair<String, String>> noBypassTokenEmployees = Arrays.asList(
+            Pair.of(String.format("%s/check-in-reservation/{tableBookingId}", apiTableBookingPrefix), "PUT"),
+            Pair.of(String.format("%s/change-table/{tableBookingId}", apiTableBookingPrefix), "PUT")
     );
 
     @Autowired
@@ -199,6 +203,10 @@ public class SecurityConfig {
 
                     for (Pair<String, String> nobyPassTokenAdmin : noBypassTokenAdmins) {
                         auth.requestMatchers(nobyPassTokenAdmin.getSecond(), nobyPassTokenAdmin.getFirst()).hasAnyAuthority("ROLE_EMPLOYEE", "ROLE_EMPLOYEE_ADMIN");
+                    }
+
+                    for (Pair<String, String> noByPassTokenEmployee : noBypassTokenEmployees) {
+                        auth.requestMatchers(noByPassTokenEmployee.getSecond(), noByPassTokenEmployee.getFirst()).hasAnyAuthority("ROLE_EMPLOYEE");
                     }
 
                     auth
