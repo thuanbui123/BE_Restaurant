@@ -1,7 +1,7 @@
 package com.example.restaurant.controller;
 
-import com.example.restaurant.request.BillTableRequest;
-import com.example.restaurant.service.BillTableService;
+import com.example.restaurant.request.OrderedTableRequest;
+import com.example.restaurant.service.OrderedTableService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,20 +13,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("bill-table-link")
+@RequestMapping("order-table-link")
 public class BillTableController {
     @Autowired
-    private BillTableService service;
+    private OrderedTableService service;
 
     @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @GetMapping("/{prefix}")
-    public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam(name = "table-id") Integer tableId, @RequestParam(name = "bill-status") String billStatus) {
-        return service.findData(prefix, tableId, billStatus);
+    public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam(name = "table-id") Integer tableId) {
+        return service.findData(prefix, tableId);
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PostMapping("/add")
-    public ResponseEntity<?> addData (@Valid @RequestBody BillTableRequest request, BindingResult result) {
+    public ResponseEntity<?> addData (@Valid @RequestBody OrderedTableRequest request, BindingResult result) {
         if (result.hasErrors()) {
             String errors = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)

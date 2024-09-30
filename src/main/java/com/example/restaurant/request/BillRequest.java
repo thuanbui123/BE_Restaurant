@@ -16,10 +16,6 @@ public class BillRequest {
     @Min(value = 1, message = "Mã nhân viên phải lớn hơn 0!")
     private Integer employeeId;
 
-    @NotNull(message = "Mã khách hàng là một trường bắt buộc!")
-    @Min(value = 1, message = "Mã khách hàng phải lớn hơn 0!")
-    private Integer customerId;
-
     private String status = "Chờ xử lý";
 
     private String note;

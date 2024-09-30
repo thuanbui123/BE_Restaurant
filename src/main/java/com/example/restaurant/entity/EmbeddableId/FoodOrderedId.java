@@ -14,8 +14,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 
 public class FoodOrderedId implements Serializable {
-    @Column(name = "billId")
-    private Integer billId;
+    @Column(name = "orderedId")
+    private Integer orderedId;
 
     @Column(name = "foodId")
     private Integer foodId;

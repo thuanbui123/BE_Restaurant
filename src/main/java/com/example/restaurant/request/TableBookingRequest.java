@@ -12,7 +12,7 @@ public class TableBookingRequest {
     private Integer customerId;
 
     @NotBlank(message = "Thời gian dự kiến dùng bữa là một trường bắt buộc!")
-    private String intervalTime;
+    private String bookingTime;
 
     private String note;
 }

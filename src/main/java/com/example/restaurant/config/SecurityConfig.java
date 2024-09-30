@@ -65,7 +65,7 @@ public class SecurityConfig {
 
     private final String apiFoodCategoryLinkPrefix = ApiConfig.API_FOOD_CATEGORY_LINK_PREFIX;
 
-    private final String apiBillTableLinkPrefix = ApiConfig.API_BILL_TABLE_LINK_PREFIX;
+    private final String apiOrderTableLinkPrefix = ApiConfig.API_ORDER_TABLE_LINK_PREFIX;
 
     private final String apiComboFoodPrefix = ApiConfig.API_COMBO_FOOD_PREFIX;
 
@@ -155,8 +155,8 @@ public class SecurityConfig {
 
     final List<Pair<String, String>> noBypassTokenAdmins = Arrays.asList(
             Pair.of(String.format("%s/{prefix}", apiSupplierPrefix), "GET"),
-            Pair.of(String.format("%s/{prefix}", apiBillTableLinkPrefix), "GET"),
-            Pair.of(String.format("%s/add", apiBillTableLinkPrefix), "POST"),
+            Pair.of(String.format("%s/{prefix}", apiOrderTableLinkPrefix), "GET"),
+            Pair.of(String.format("%s/add", apiOrderTableLinkPrefix), "POST"),
             Pair.of(String.format("%s/add", apiSupplierPrefix), "POST"),
             Pair.of(String.format("%s/update/{code}", apiSupplierPrefix), "PUT"),
             Pair.of(String.format("%s/{prefix}", apiCustomerPrefix), "GET"),

@@ -7,6 +7,7 @@ import com.example.restaurant.repository.TableBookingRepository;
 import com.example.restaurant.repository.TablesRepository;
 import com.example.restaurant.request.TableBookingRequest;
 import com.example.restaurant.utils.PaginateUtil;
+import com.example.restaurant.utils.TimeConvertUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -74,10 +75,10 @@ public class TableBookingService {
             if (exists != null) {
                 return ResponseEntity.badRequest().body("Khách hàng đang dùng bữa tại nhà hàng!");
             }
-            Integer countTableBooking = repository.countTableBooking(request.getIntervalTime());
+            Integer countTableBooking = repository.countTableBooking(request.getBookingTime());
             Integer totalTable = tablesRepository.totalTable();
             if (countTableBooking == Math.ceil(0.3 * totalTable)) {
-                return ResponseEntity.badRequest().body("Bàn đã được đặt hết trong khung giờ: " + request.getIntervalTime() + "!");
+                return ResponseEntity.badRequest().body("Bàn đã được đặt hết trong khung giờ: " + request.getBookingTime() + "!");
             }
             TableBookingEntity entity = TableBookingMapper.mapToEntity(request);
             repository.save(entity);
@@ -97,13 +98,13 @@ public class TableBookingService {
             if (!exists.getStatus().equals("Đã đặt bàn")) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không được sửa phiếu đặt bàn có trạng thái khác trạng thái đã đặt bàn!");
             }
-            Integer countTableBooking = repository.countTableBooking(request.getIntervalTime());
+            Integer countTableBooking = repository.countTableBooking(request.getBookingTime());
             Integer totalTable = tablesRepository.totalTable();
             if (countTableBooking == Math.ceil(0.3 * totalTable)) {
-                return ResponseEntity.badRequest().body("Bàn đã được đặt hết trong khung giờ: " + request.getIntervalTime() + "!");
+                return ResponseEntity.badRequest().body("Bàn đã được đặt hết trong khung giờ: " + request.getBookingTime() + "!");
             }
             exists.setCustomer(customersRepository.findOneById(request.getCustomerId()));
-            exists.setIntervalTime(request.getIntervalTime());
+            exists.setBookingTime(request.getBookingTime());
             exists.setNote(request.getNote());
             repository.save(exists);
             return ResponseEntity.ok().body("Sửa phiếu đặt bàn thành công.");

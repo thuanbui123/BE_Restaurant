@@ -25,18 +25,11 @@ public class TableBookingEntity extends BaseEntity{
     private TablesEntity tablesEntity;
 
     @Column(name = "bookingTime")
-    private LocalDateTime bookingTime;
-
-    @Column(name = "intervalTime")
-    private String intervalTime;
+    private String bookingTime;
 
     @Column(name = "status")
     private String status;
 
     @Column(name = "note")
     private String note;
-
-    @OneToMany(mappedBy = "tableBooking", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private Set<TableBookingHistoryEntity> tableBookingHistoryEntities;
 }

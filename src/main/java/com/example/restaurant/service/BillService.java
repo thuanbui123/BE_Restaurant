@@ -1,10 +1,7 @@
 package com.example.restaurant.service;
 
 import com.example.restaurant.entity.BillEntity;
-import com.example.restaurant.entity.BillTableEntity;
 import com.example.restaurant.entity.CustomersEntity;
-import com.example.restaurant.entity.EmbeddableId.BillTableId;
-import com.example.restaurant.entity.TablesEntity;
 import com.example.restaurant.mapper.BillMapper;
 import com.example.restaurant.repository.*;
 import com.example.restaurant.request.BillRequest;
@@ -113,7 +110,6 @@ public class BillService {
                 // assert là từ khóa kiểm tra điều kiện tại runtime
                 assert billEntityRequest != null;
                 if (existsBill.getStatus().equals("Chờ xử lý")) {
-                    existsBill.setCustomer(billEntityRequest.getCustomer());
                     existsBill.setStatus(billEntityRequest.getStatus());
                     existsBill.setNote(billRequest.getNote());
                     repository.save(existsBill);

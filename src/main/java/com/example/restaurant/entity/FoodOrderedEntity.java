@@ -21,10 +21,10 @@ public class FoodOrderedEntity {
     private Long totalPrice;
 
     @ManyToOne
-    @MapsId("billId")
-    @JoinColumn(name = "billId")
+    @MapsId("orderedId")
+    @JoinColumn(name = "orderedId")
     @JsonBackReference
-    private BillEntity bill;
+    private OrderedEntity ordered;
 
     @ManyToOne
     @MapsId("foodId")

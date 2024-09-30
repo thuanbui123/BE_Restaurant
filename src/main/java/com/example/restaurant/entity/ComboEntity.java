@@ -58,7 +58,7 @@ public class ComboEntity extends BaseEntity{
     @JoinTable(
             name = "comboordered",
             joinColumns = @JoinColumn(name = "comboId"),
-            inverseJoinColumns = @JoinColumn(name = "billId")
+            inverseJoinColumns = @JoinColumn(name = "orderedId")
     )
-    private List<BillEntity> bills;
+    private List<OrderedEntity> ordered;
 }

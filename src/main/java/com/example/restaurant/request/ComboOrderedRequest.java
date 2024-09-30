@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class ComboOrderedRequest {
-    private Integer billId;
+    private Integer ordered;
     private List<ComboOrderedDetailRequest> requests;
 }

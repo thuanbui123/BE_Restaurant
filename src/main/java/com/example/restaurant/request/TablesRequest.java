@@ -12,6 +12,5 @@ public class TablesRequest {
     @NotBlank(message = "Vị trí của bàn ăn là một trường dữ liệu bắt buộc!")
     private String location;
 
-    @NotBlank(message = "Trạng thái của bàn ăn là một trường dữ liệu bắt buộc!")
     private String status;
 }

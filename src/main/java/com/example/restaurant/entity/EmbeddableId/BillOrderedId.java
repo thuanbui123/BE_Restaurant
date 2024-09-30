@@ -12,9 +12,9 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class ComboOrderedId implements Serializable {
-    @Column(name = "comboId")
-    private Integer comboId;
+public class BillOrderedId implements Serializable {
+    @Column(name = "billId")
+    private Integer billId;
 
     @Column(name = "orderedId")
     private Integer orderedId;

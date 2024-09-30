@@ -6,7 +6,6 @@ import lombok.Data;
 public class BillResponse {
     private String code;
     private String employeeName;
-    private String customerName;
     private String status;
     private Long totalPrice;
     private String note;

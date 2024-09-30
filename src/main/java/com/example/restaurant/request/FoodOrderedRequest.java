@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class FoodOrderedRequest {
-    private Integer billId;
+    private Integer orderedId;
     private List<FoodOrderedDetailRequest> detailRequests;
 }

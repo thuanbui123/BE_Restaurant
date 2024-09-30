@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -26,31 +25,7 @@ public class BillEntity extends BaseEntity{
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "customerId")
-    @JsonBackReference
-    private CustomersEntity customer;
-
-    @ManyToOne
     @JoinColumn(name = "employeeId")
     @JsonBackReference
     private EmployeeEntity employee;
-
-    @ManyToMany
-    @JoinTable(
-            name = "billtable",
-            joinColumns = @JoinColumn(name = "billId"),
-            inverseJoinColumns = @JoinColumn(name = "tableId")
-    )
-    private List<TablesEntity> tables;
-
-    @ManyToMany(mappedBy = "bills")
-    private List<ComboEntity> combos;
-
-    @ManyToMany
-    @JoinTable(
-            name = "foodordered",
-            joinColumns = @JoinColumn(name = "billId"),
-            inverseJoinColumns = @JoinColumn(name = "foodId")
-    )
-    private List<FoodsEntity> foodsEntities;
 }

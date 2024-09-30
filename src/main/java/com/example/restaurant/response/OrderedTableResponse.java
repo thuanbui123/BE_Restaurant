@@ -5,10 +5,10 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class BillTableResponse {
+public class OrderedTableResponse {
     private Integer tableId;
     private String tableCode;
     private String tableLocation;
     private String tableStatus;
-    private List<BillResponse> billResponses;
+    private List<OrderResponse> orderResponses;
 }

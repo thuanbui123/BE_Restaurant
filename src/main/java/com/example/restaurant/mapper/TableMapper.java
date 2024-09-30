@@ -9,7 +9,7 @@ public class TableMapper {
         TablesEntity entity = new TablesEntity();
         entity.setCode(request.getCode());
         entity.setLocation(request.getLocation());
-        entity.setStatus(request.getStatus());
+        entity.setStatus("Trống");
         return entity;
     }
 

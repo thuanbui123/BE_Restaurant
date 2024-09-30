@@ -1,25 +1,25 @@
 package com.example.restaurant.entity;
 
-import com.example.restaurant.entity.EmbeddableId.BillTableId;
+import com.example.restaurant.entity.EmbeddableId.OrderedTableId;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "billtable")
+@Table(name = "ordertable")
 @Setter
 @Getter
-public class BillTableEntity {
+public class OrderedTableEntity {
 
     @EmbeddedId
-    private BillTableId id;
+    private OrderedTableId id;
 
     @ManyToOne
-    @MapsId("billId")
-    @JoinColumn(name = "billId")
+    @MapsId("orderedId")
+    @JoinColumn(name = "orderedId")
     @JsonBackReference
-    private BillEntity bill;
+    private OrderedEntity ordered;
 
     @ManyToOne
     @MapsId("tableId")

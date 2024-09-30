@@ -19,8 +19,8 @@ public interface TableBookingRepository extends JpaRepository<TableBookingEntity
             "order by bookingTime desc", nativeQuery = true)
     Page<TableBookingEntity> findByUserId (@Param("id") Integer id, Pageable pageable);
 
-    @Query(value = "select count(*) from tablebooking where intervalTime = :interval", nativeQuery = true)
-    Integer countTableBooking (@Param("interval") String interval);
+    @Query(value = "select count(*) from tablebooking where bookingTime = :bookingTime", nativeQuery = true)
+    Integer countTableBooking (@Param("bookingTime") String bookingTime);
 
     @Query(value = "select * from tablebooking where customerId = :id and status = :status", nativeQuery = true)
     TableBookingEntity findByCustomerIdAndStatus (@Param("id") Integer customerId, @Param("status") String status);

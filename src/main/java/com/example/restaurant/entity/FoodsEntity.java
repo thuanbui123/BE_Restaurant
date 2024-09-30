@@ -35,7 +35,7 @@ public class FoodsEntity extends BaseEntity{
     private List<ComboEntity> combos;
 
     @ManyToMany(mappedBy = "foodsEntities")
-    private List<BillEntity> billEntities;
+    private List<OrderedEntity> orderedEntities;
 
     @ManyToMany
     @JoinTable(

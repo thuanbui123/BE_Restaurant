@@ -27,5 +27,5 @@ public class TablesEntity extends BaseEntity {
     private Set<TableBookingEntity> tableBooking;
 
     @ManyToMany(mappedBy = "tables")
-    private List<BillEntity> bills;
+    private List<OrderedEntity> ordered;
 }

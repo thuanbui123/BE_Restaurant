@@ -8,7 +8,6 @@ public class TableBookingResponse {
     private Integer customerId;
     private String customerName;
     private String bookingTime;
-    private String intervalTime;
     private Integer tableId;
     private String status;
     private String note;

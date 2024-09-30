@@ -28,9 +28,8 @@ public class TableBookingMapper {
             throw new IllegalArgumentException("Không tồn tại khách hàng " + request.getCustomerId());
         }
         TableBookingEntity entity = new TableBookingEntity();
-        entity.setBookingTime(LocalDateTime.now());
+        entity.setBookingTime(request.getBookingTime());
         entity.setTablesEntity(tablesRepository.findOneById(1));
-        entity.setIntervalTime(request.getIntervalTime());
         entity.setNote(request.getNote());
         entity.setStatus("Đã đặt bàn");
         entity.setCustomer(customersRepository.findOneById(request.getCustomerId()));
@@ -40,11 +39,10 @@ public class TableBookingMapper {
     public static TableBookingResponse mapToResponse (TableBookingEntity entity) {
         TableBookingResponse response = new TableBookingResponse();
         response.setId(entity.getId());
-        response.setIntervalTime(entity.getIntervalTime());
         response.setStatus(entity.getStatus());
         response.setTableId(entity.getTablesEntity().getId());
         response.setNote(entity.getNote());
-        response.setBookingTime(TimeConvertUtil.convertLocalDateTimeToString(entity.getBookingTime()));
+        response.setBookingTime(entity.getBookingTime());
         CustomersEntity customersEntity = entity.getCustomer();
         response.setCustomerId(customersEntity.getId());
         response.setCustomerName(customersEntity.getName());
