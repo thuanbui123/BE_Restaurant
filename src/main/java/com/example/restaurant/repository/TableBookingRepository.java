@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalTime;
+import java.util.List;
+
 @Repository
 public interface TableBookingRepository extends JpaRepository<TableBookingEntity, Integer> {
 
@@ -27,4 +30,7 @@ public interface TableBookingRepository extends JpaRepository<TableBookingEntity
 
     @Query(value = "select * from tablebooking where id = :id", nativeQuery = true)
     TableBookingEntity findOneById (@Param("id") Integer id);
+
+    @Query(value = "SELECT * FROM tablebooking WHERE bookingTime < :timeThreshold AND status = :status", nativeQuery = true)
+    List<TableBookingEntity> findLateReservations (@Param("timeThreshold") LocalTime timeThreshold, @Param("status") String status);
 }

@@ -17,6 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 @Service
 public class TableBookingService {
     @Autowired
@@ -78,10 +82,11 @@ public class TableBookingService {
                 return ResponseEntity.badRequest().body("Khách hàng đang dùng bữa tại nhà hàng!");
             }
             TableBookingEntity entity = TableBookingMapper.mapToEntity(request);
-            repository.save(entity);
+            entity = repository.save(entity);
+            String date = TimeConvertUtil.convertTimestampToDate(entity.getCreatedAt());
             String mailBody = "Kính gửi " + entity.getCustomer().getName() + ",\n\n" +
                     "Chúng tôi xin chân thành cảm ơn Quý khách đã lựa chọn nhà hàng của chúng tôi cho buổi tiệc sắp tới!\n" +
-                    "Quý khách đã đặt bàn vào lúc: " + entity.getBookingTime() + ".\n" +
+                    "Quý khách đã đặt bàn vào lúc: " + entity.getBookingTime() + " ngày " + date + ".\n" +
                     "Đội ngũ của chúng tôi rất háo hức được chào đón và phục vụ Quý khách. Chúng tôi sẽ chuẩn bị mọi thứ để mang đến cho Quý khách một trải nghiệm ẩm thực tuyệt vời.\n\n" +
                     "Nếu có bất kỳ yêu cầu nào hoặc cần điều chỉnh thời gian đặt bàn, xin vui lòng liên hệ với chúng tôi. Chúng tôi luôn sẵn sàng hỗ trợ Quý khách.\n\n" +
                     "Trân trọng,\n" +
@@ -166,5 +171,13 @@ public class TableBookingService {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    public List<TableBookingEntity> findLateReservations (LocalTime thresholdTime) {
+        return repository.findLateReservations(thresholdTime, "Đã đặt bàn");
+    }
+
+    public TableBookingEntity save (TableBookingEntity entity) {
+        return repository.save(entity);
     }
 }
