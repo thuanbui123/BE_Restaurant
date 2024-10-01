@@ -12,10 +12,12 @@ import java.util.List;
 @Repository
 public interface FoodOrderedRepository extends JpaRepository<FoodOrderedEntity, Integer> {
 
-    @Query (value = "select * from foodordered where billId = :id", nativeQuery = true)
-    List<FoodOrderedEntity> findByBillId(@Param("id") Integer id);
+    @Query (value = "select * from foodordered where orderedId = :id", nativeQuery = true)
+    List<FoodOrderedEntity> findByOrderedId(@Param("id") Integer id);
 
     boolean existsById(FoodOrderedId id);
+
+    FoodOrderedEntity findById (FoodOrderedId id);
 
     void deleteById (FoodOrderedId id);
 }

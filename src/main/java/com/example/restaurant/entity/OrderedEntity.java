@@ -29,7 +29,8 @@ public class OrderedEntity extends BaseEntity{
     )
     private List<TablesEntity> tables;
 
-
+    @Column(name = "note")
+    private String note;
 
     @ManyToMany(mappedBy = "ordered")
     private List<ComboEntity> combos;

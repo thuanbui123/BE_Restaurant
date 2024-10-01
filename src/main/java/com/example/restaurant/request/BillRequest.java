@@ -16,7 +16,7 @@ public class BillRequest {
     @Min(value = 1, message = "Mã nhân viên phải lớn hơn 0!")
     private Integer employeeId;
 
-    private String status = "Chờ xử lý";
+    private String status = "Chờ thanh toán";
 
     private String note;
 }

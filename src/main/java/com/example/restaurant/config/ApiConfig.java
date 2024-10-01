@@ -49,4 +49,6 @@ public class ApiConfig {
     public static final String API_TABLE_BOOKING_PREFIX = "/table-booking";
 
     public static final String API_CUSTOMER_FOOD_REVIEW_PREFIX = "/food-reviews";
+
+    public static final String API_USER_ORDER_PREFIX = "/user-order";
 }

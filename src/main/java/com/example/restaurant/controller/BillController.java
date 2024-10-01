@@ -48,16 +48,4 @@ public class BillController {
         }
         return service.updateData(code, request);
     }
-
-    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
-    @PutMapping("/cancel/{code}")
-    public ResponseEntity<?> updateData (@PathVariable String code, @Valid @RequestBody CancelBillRequest request, BindingResult result) {
-        if (result.hasErrors()) {
-            String errors = result.getAllErrors().stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(errors);
-        }
-        return service.cancelBill(code, request);
-    }
 }

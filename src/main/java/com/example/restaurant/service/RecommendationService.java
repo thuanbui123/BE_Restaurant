@@ -1,15 +1,9 @@
 package com.example.restaurant.service;
 
-import com.example.restaurant.entity.BillEntity;
-import com.example.restaurant.entity.CustomerFoodReviewEntity;
-import com.example.restaurant.entity.FoodOrderedEntity;
-import com.example.restaurant.entity.FoodsEntity;
+import com.example.restaurant.entity.*;
 import com.example.restaurant.mapper.FoodsMapper;
 import com.example.restaurant.model.FoodRatingModel;
-import com.example.restaurant.repository.BillRepository;
-import com.example.restaurant.repository.CustomerFoodReviewRepository;
-import com.example.restaurant.repository.FoodOrderedRepository;
-import com.example.restaurant.repository.FoodsRepository;
+import com.example.restaurant.repository.*;
 import com.example.restaurant.response.FoodsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +18,7 @@ public class RecommendationService {
     private CustomerFoodReviewRepository customerFoodReviewRepository;
 
     @Autowired
-    private BillRepository billRepository;
+    private OrderedRepository orderedRepository;
 
     @Autowired
     private FoodOrderedRepository foodOrderedRepository;
@@ -68,11 +62,11 @@ public class RecommendationService {
         //Gợi ý món ăn từ các khách hàng tương tự
         for (Integer similarCustomerId : similarCustomers) {
             // Lấy danh sách các bill của khách hàng tương tự
-            List<BillEntity> bills = billRepository.findByCustomerId(similarCustomerId);
+            List<OrderedEntity> ordereds = orderedRepository.findByCustomerId(similarCustomerId);
 
             // Duyệt qua các món ăn đã được đặt trong các bill
-            for (BillEntity bill : bills) {
-                List<FoodOrderedEntity> foodOrders = foodOrderedRepository.findByBillId(bill.getId());
+            for (OrderedEntity ordered : ordereds) {
+                List<FoodOrderedEntity> foodOrders = foodOrderedRepository.findByOrderedId(ordered.getId());
                 for (FoodOrderedEntity foodOrdered : foodOrders) {
                     FoodsEntity food = foodsRepository.findById(foodOrdered.getFood().getId()).orElse(null);
                     if (food != null && !hasAlreadyOrdered(customerId, food.getId())) {
@@ -124,9 +118,9 @@ public class RecommendationService {
      */
     private boolean hasAlreadyOrdered(Integer customerId, Integer foodId) {
         // Lấy danh sách bill của khách hàng
-        List<BillEntity> customerBill = billRepository.findByCustomerId(customerId);
-        return customerBill.stream()
-                .flatMap(bill -> foodOrderedRepository.findByBillId(bill.getId()).stream())
+        List<OrderedEntity> customerOrders = orderedRepository.findByCustomerId(customerId);
+        return customerOrders.stream()
+                .flatMap(bill -> foodOrderedRepository.findByOrderedId(bill.getId()).stream())
                 .anyMatch(order -> order.getFood().getId().equals(foodId));
     }
 

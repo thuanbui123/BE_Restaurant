@@ -12,8 +12,10 @@ import java.util.List;
 @Repository
 public interface ComboOrderRepository extends JpaRepository<ComboOrderEntity, Integer> {
 
-    @Query(value = "select * from comboordered where billId = :id", nativeQuery = true)
-    List<ComboOrderEntity> findByBillId(@Param("id") Integer billId);
+    @Query(value = "select * from comboordered where orderedId = :id", nativeQuery = true)
+    List<ComboOrderEntity> findByOrderedId(@Param("id") Integer orderedId);
+
+    ComboOrderEntity findOneById (ComboOrderedId id);
 
     void deleteById (ComboOrderedId id);
 

@@ -1,6 +1,5 @@
 package com.example.restaurant.mapper;
 
-import com.example.restaurant.entity.BillEntity;
 import com.example.restaurant.entity.ComboEntity;
 import com.example.restaurant.entity.ComboOrderEntity;
 import com.example.restaurant.entity.EmbeddableId.ComboOrderedId;
@@ -9,7 +8,6 @@ import com.example.restaurant.request.ComboOrderedDetailRequest;
 import com.example.restaurant.request.ComboOrderedRequest;
 import com.example.restaurant.response.ComboOrderedDetailResponse;
 import com.example.restaurant.response.ComboOrderedResponse;
-import com.example.restaurant.service.BillService;
 import com.example.restaurant.service.ComboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -55,6 +53,7 @@ public class ComboOrderedMapper {
                 .map(entity -> {
                     ComboOrderedDetailResponse detailResponse = new ComboOrderedDetailResponse();
                     detailResponse.setComboId(entity.getCombo().getId());
+                    detailResponse.setImg(entity.getCombo().getImg());
                     detailResponse.setQuantity(entity.getQuantity());
                     detailResponse.setComboName(entity.getCombo().getName());
                     detailResponse.setQuantity(entity.getQuantity());

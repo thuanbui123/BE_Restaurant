@@ -53,14 +53,6 @@ public class BillService {
         return repository.findOneById(id);
     }
 
-    public ResponseEntity<?> findByStatus (String status, Pageable pageable) {
-        return PaginateUtil.paginate(
-                (pg) -> repository.findOneByStatus(status, pageable),
-                pageable,
-                BillMapper::mapToResponse
-        );
-    }
-
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
         try {
             if (prefix.equals("find-all") && query == null) {
@@ -75,9 +67,6 @@ public class BillService {
                         .map(BillMapper::mapToResponse)
                         .toList();
                 return ResponseEntity.ok().body(responses);
-            } else if (prefix.equals("current-invoice") && query == null) {
-                Pageable pageable = PageRequest.of(page, size);
-                return findByStatus("Chờ xử lý", pageable);
             }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("API không tồn tại!");
         } catch (Exception e) {
@@ -120,25 +109,6 @@ public class BillService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Đơn hàng " + code + " không tồn tại!");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi cập nhật đơn hàng: "+ e.getMessage());
-        }
-    }
-
-    @Transactional
-    public ResponseEntity<?> cancelBill (String code, CancelBillRequest request) {
-        try {
-            if (repository.existsByCode(code)) {
-                BillEntity existsBill = repository.findOneByCode(code);
-                if (existsBill.getStatus().equals("Chờ xử lý")) {
-                    existsBill.setStatus("Đã hủy");
-                    existsBill.setNote(request.getNote());
-                    repository.save(existsBill);
-                    return ResponseEntity.ok().body("Đơn hàng " + code + " hủy thành công.");
-                }
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không được hủy đơn hàng khi đã thanh toán!");
-            }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Đơn hàng " + code + " không tồn tại!");
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Đã có lỗi khi hủy đơn hàng: " + e.getMessage());
         }
     }
 }

@@ -77,6 +77,8 @@ public class SecurityConfig {
 
     private final String apiCustomerFoodReviewPrefix = ApiConfig.API_CUSTOMER_FOOD_REVIEW_PREFIX;
 
+    private final String apiUserOrderPrefix = ApiConfig.API_USER_ORDER_PREFIX;
+
     final List<Pair<String, String>> bypassTokens = Arrays.asList(
             Pair.of(String.format("%s/authenticate", apiAuthPrefix), "POST"),
             Pair.of(String.format("%s/register", apiAuthPrefix), "POST"),
@@ -149,7 +151,13 @@ public class SecurityConfig {
             Pair.of(String.format("%s/delete", apiFoodOrderedPrefix), "DELETE"),
             Pair.of(String.format("%s/add", apiTableBookingPrefix), "POST"),
             Pair.of(String.format("%s/cancel-table-booking/{id}", apiTableBookingPrefix), "PUT"),
-            Pair.of(String.format("%s/add", apiCustomerFoodReviewPrefix), "POST")
+            Pair.of(String.format("%s/{prefix}", apiUserOrderPrefix), "GET"),
+            Pair.of(String.format("%s/ordered", apiUserOrderPrefix), "POST"),
+            Pair.of(String.format("%s/update-ordered", apiUserOrderPrefix), "PUT"),
+            Pair.of(String.format("%s/delete-item-in-order", apiUserOrderPrefix), "DELETE"),
+            Pair.of(String.format("%s/order-payment", apiUserOrderPrefix), "POST"),
+            Pair.of(String.format("%s/cancel-order", apiUserOrderPrefix), "PUT")
+
     );
 
     final List<Pair<String, String>> noBypassTokenAdmins = Arrays.asList(

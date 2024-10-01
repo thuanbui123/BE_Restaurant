@@ -25,8 +25,8 @@ public class ComboOrderedService {
     @Autowired
     private ComboRepository comboRepository;
 
-    private ComboOrderedResponse findByBillId (Integer billId) {
-        List<ComboOrderEntity> entities = repository.findByBillId(billId);
+    private ComboOrderedResponse findByBillId (Integer orderId) {
+        List<ComboOrderEntity> entities = repository.findByOrderedId(orderId);
         return (entities != null && !entities.isEmpty()) ? ComboOrderedMapper.mapToResponse(entities) : null;
     }
 

@@ -6,6 +6,7 @@ import lombok.Data;
 public class ComboOrderedDetailResponse {
     private Integer comboId;
     private String comboName;
+    private String img;
     private Integer quantity;
     private Long totalPrice;
 }

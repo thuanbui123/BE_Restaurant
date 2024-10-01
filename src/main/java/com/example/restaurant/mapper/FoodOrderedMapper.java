@@ -53,6 +53,7 @@ public class FoodOrderedMapper {
         List<FoodOrderedDetailResponse> detailResponses = entities.stream()
                 .map(entity -> {
                     FoodOrderedDetailResponse detailResponse = new FoodOrderedDetailResponse();
+                    detailResponse.setImg(entity.getFood().getImg());
                     detailResponse.setFoodId(entity.getFood().getId());
                     detailResponse.setFoodName(entity.getFood().getName());
                     detailResponse.setQuantity(entity.getQuantity());

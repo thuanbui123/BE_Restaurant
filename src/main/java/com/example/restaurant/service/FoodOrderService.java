@@ -20,14 +20,14 @@ public class FoodOrderService {
     @Autowired
     private FoodOrderedRepository repository;
 
-    private FoodOrderedResponse findByBillId (Integer billId) {
-        List<FoodOrderedEntity> entities = repository.findByBillId(billId);
+    private FoodOrderedResponse findByBillId (Integer orderId) {
+        List<FoodOrderedEntity> entities = repository.findByOrderedId(orderId);
         return (entities != null && !entities.isEmpty()) ? FoodOrderedMapper.mapToResponse(entities) : null;
     }
 
-    public ResponseEntity<?> findData (String prefix, Integer billId) {
-        if (prefix.equals("search") && billId != null) {
-            return ResponseEntity.ok().body(findByBillId(billId));
+    public ResponseEntity<?> findData (String prefix, Integer orderId) {
+        if (prefix.equals("search") && orderId != null) {
+            return ResponseEntity.ok().body(findByBillId(orderId));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("API không tồn tại!");
         }
