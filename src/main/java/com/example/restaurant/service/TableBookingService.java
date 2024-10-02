@@ -1,11 +1,12 @@
 package com.example.restaurant.service;
 
+import com.example.restaurant.entity.EmbeddableId.OrderedTableId;
+import com.example.restaurant.entity.OrderedEntity;
+import com.example.restaurant.entity.OrderedTableEntity;
 import com.example.restaurant.entity.TableBookingEntity;
 import com.example.restaurant.entity.TablesEntity;
 import com.example.restaurant.mapper.TableBookingMapper;
-import com.example.restaurant.repository.CustomersRepository;
-import com.example.restaurant.repository.TableBookingRepository;
-import com.example.restaurant.repository.TablesRepository;
+import com.example.restaurant.repository.*;
 import com.example.restaurant.request.TableBookingRequest;
 import com.example.restaurant.utils.PaginateUtil;
 import com.example.restaurant.utils.TimeConvertUtil;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,6 +33,12 @@ public class TableBookingService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private OrderedRepository orderedRepository;
+
+    @Autowired
+    private OrderedTableRepository orderedTableRepository;
 
     private ResponseEntity<?> findByStatus (String status, Pageable pageable) {
         return PaginateUtil.paginate(
@@ -135,10 +143,27 @@ public class TableBookingService {
             if (tablesEntity.getStatus().equalsIgnoreCase("Đang phục vụ")) {
                 return ResponseEntity.badRequest().body("Bàn ăn có mã: " + tableId + " đang phục vụ khách hàng!");
             }
+
+
             tablesEntity.setStatus("Đang phục vụ");
             tablesRepository.save(tablesEntity);
             entity.setStatus("Khách nhận bàn");
             entity.setTablesEntity(tablesEntity);
+
+
+            OrderedEntity ordered = new OrderedEntity();
+            List<TablesEntity> tablesEntities = new ArrayList<>();
+            tablesEntities.add(tablesEntity);
+            ordered.setTables(tablesEntities);
+            ordered.setCustomer(entity.getCustomer());
+            ordered.setStatus("Chờ xử lý");
+            ordered = orderedRepository.save(ordered);
+            OrderedTableEntity orderedTable = new OrderedTableEntity();
+            OrderedTableId orderedTableId = new OrderedTableId(ordered.getId(), tableId);
+            orderedTable.setId(orderedTableId);
+            orderedTable.setOrdered(ordered);
+            orderedTable.setTable(tablesRepository.findOneById(tableId));
+            orderedTableRepository.save(orderedTable);
             repository.save(entity);
             return ResponseEntity.ok().body(tableId);
         } catch (Exception e) {

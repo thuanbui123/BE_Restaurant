@@ -79,6 +79,8 @@ public class SecurityConfig {
 
     private final String apiUserOrderPrefix = ApiConfig.API_USER_ORDER_PREFIX;
 
+    private final String apiEmployeeOrder = ApiConfig.API_EMPLOYEE_ORDER_PREFIX;
+
     final List<Pair<String, String>> bypassTokens = Arrays.asList(
             Pair.of(String.format("%s/authenticate", apiAuthPrefix), "POST"),
             Pair.of(String.format("%s/register", apiAuthPrefix), "POST"),
@@ -157,7 +159,6 @@ public class SecurityConfig {
             Pair.of(String.format("%s/delete-item-in-order", apiUserOrderPrefix), "DELETE"),
             Pair.of(String.format("%s/order-payment", apiUserOrderPrefix), "POST"),
             Pair.of(String.format("%s/cancel-order", apiUserOrderPrefix), "PUT")
-
     );
 
     final List<Pair<String, String>> noBypassTokenAdmins = Arrays.asList(
@@ -178,7 +179,12 @@ public class SecurityConfig {
 
     final List<Pair<String, String>> noBypassTokenEmployees = Arrays.asList(
             Pair.of(String.format("%s/check-in-reservation/{tableBookingId}", apiTableBookingPrefix), "PUT"),
-            Pair.of(String.format("%s/change-table/{tableBookingId}", apiTableBookingPrefix), "PUT")
+            Pair.of(String.format("%s/change-table/{tableBookingId}", apiTableBookingPrefix), "PUT"),
+            Pair.of(String.format("%s/call-order", apiEmployeeOrder), "POST"),
+            Pair.of(String.format("%s/update-ordered", apiEmployeeOrder), "PUT"),
+            Pair.of(String.format("%s/delete-item-in-order", apiEmployeeOrder), "DELETE"),
+            Pair.of(String.format("%s/order-payment", apiEmployeeOrder), "POST"),
+            Pair.of(String.format("%s/cancel-order", apiEmployeeOrder), "PUT")
     );
 
     @Autowired

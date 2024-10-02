@@ -4,42 +4,45 @@ import com.example.restaurant.entity.*;
 import com.example.restaurant.entity.EmbeddableId.BillOrderedId;
 import com.example.restaurant.entity.EmbeddableId.ComboOrderedId;
 import com.example.restaurant.entity.EmbeddableId.FoodOrderedId;
-import com.example.restaurant.mapper.UserOrderMapper;
+import com.example.restaurant.mapper.EmployeeOrderMapper;
 import com.example.restaurant.repository.*;
 import com.example.restaurant.request.CancelOrderRequest;
-import com.example.restaurant.request.UserOrderRequest;
-import com.example.restaurant.response.UserOrderResponse;
+import com.example.restaurant.request.EmployeeOrderRequest;
+import com.example.restaurant.response.EmployeeOrderResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
-public class UserOrderService {
+public class EmployeeOrderService {
     @Autowired
-    private ComboOrderRepository comboOrderRepository;
-
-    @Autowired
-    private FoodOrderedRepository foodOrderedRepository;
-
-    @Autowired
-    private FoodsRepository foodsRepository;
-
-    @Autowired
-    private ComboRepository comboRepository;
+    private TablesRepository tablesRepository;
 
     @Autowired
     private OrderedRepository orderedRepository;
 
     @Autowired
+    private FoodsRepository foodsRepository;
+
+    @Autowired
+    private FoodOrderedRepository foodOrderedRepository;
+
+    @Autowired
+    private ComboRepository comboRepository;
+
+    @Autowired
     private CustomersRepository customersRepository;
+
+    @Autowired
+    private ComboOrderRepository comboOrderRepository;
 
     @Autowired
     private EmployeeRepository employeeRepository;
@@ -50,86 +53,87 @@ public class UserOrderService {
     @Autowired
     private BillOrderRepository billOrderRepository;
 
-    private ResponseEntity<?> findByCustomerIdAndStatus (Integer customerId, String status) {
-        OrderedEntity ordered = orderedRepository.findByCustomerIdAndStatus(customerId, status);
-        if (ordered == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không có đơn hàng nào có trạng thái: " + status);
-        }
-        Integer orderId = ordered.getId();
-        List<ComboOrderEntity> comboOrderEntities = comboOrderRepository.findByOrderedId(orderId);
-        List<FoodOrderedEntity> foodsEntities = foodOrderedRepository.findByOrderedId(orderId);
-        if ((comboOrderEntities == null || comboOrderEntities.isEmpty()) && (foodsEntities == null || foodsEntities.isEmpty())) {
-            ResponseEntity.ok().body(null);
-        }
-        UserOrderResponse response = UserOrderMapper.mapToResponse(comboOrderEntities, foodsEntities);
-        return ResponseEntity.ok().body(response);
-    }
-
-    public ResponseEntity<?> findData (String prefix, Integer customerId, String status) {
-        if (prefix.equalsIgnoreCase("find-by-customer-id-and-status")) {
-            return findByCustomerIdAndStatus(customerId, status);
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tồn API");
-    }
-
     @Transactional
-    public ResponseEntity<?> userOrder (Integer customerId, UserOrderRequest request) {
+    public ResponseEntity<?> callOrder (Integer tableId, Integer customerId, EmployeeOrderRequest request) {
         try {
             if (request.getComboOrder() == null && request.getFoodOrder() == null) {
                 return ResponseEntity.badRequest().body("Không có sản phẩm được thêm vào đơn hàng!");
             }
-            OrderedEntity entity = orderedRepository.findByCustomerIdAndStatus(customerId, "Chờ xử lý");
-            if (entity == null) {
-                entity = new OrderedEntity();
-                entity.setCustomer(customersRepository.findOneById(customerId));
-                entity.setStatus("Chờ xử lý");
-                orderedRepository.save(entity);
+
+            TablesEntity tablesEntity = null;
+            if (tableId != null) {
+                tablesEntity = tablesRepository.findOneById(tableId);
             }
+
+            if (tableId != null && tablesEntity == null) {
+                return ResponseEntity.badRequest().body("Bàn không tồn tại.");
+            }
+
+            CustomersEntity customersEntity = customersRepository.findOneById(customerId);
+
+            OrderedEntity ordered = orderedRepository.findByCustomerIdAndStatus(customerId, "Chờ xử lý");
+            if (ordered == null) {
+                ordered = new OrderedEntity();
+                ordered.setStatus("Chờ xử lý");
+
+                if (customersEntity == null) {
+                    return ResponseEntity.badRequest().body("Không tồn tại khách hàng có mã: " + customerId);
+                }
+                ordered.setCustomer(customersRepository.findOneById(customerId));
+
+                if (tablesEntity != null) {
+                    List<TablesEntity> tablesEntities = new ArrayList<>();
+                    tablesEntities.add(tablesEntity);
+                    ordered.setTables(tablesEntities);
+                }
+
+                ordered = orderedRepository.save(ordered);
+            }
+
             if (request.getFoodOrder() != null) {
-                Integer orderId = entity.getId();
                 FoodsEntity foodsEntity = foodsRepository.findOneById(request.getFoodOrder().getFoodId());
                 if (foodsEntity == null) {
                     throw new IllegalArgumentException("Món ăn không tồn tại!");
                 }
-                FoodOrderedId foodOrderedId = new FoodOrderedId(orderId, foodsEntity.getId());
+                FoodOrderedId foodOrderedId = new FoodOrderedId(ordered.getId(), foodsEntity.getId());
                 if (foodOrderedRepository.existsById(foodOrderedId)) {
                     throw new IllegalArgumentException("Món ăn đã được thêm vào đơn hàng trước đó!");
                 }
                 FoodOrderedEntity foodOrdered = new FoodOrderedEntity();
                 foodOrdered.setId(foodOrderedId);
-                foodOrdered.setOrdered(entity);
+                foodOrdered.setOrdered(ordered);
                 foodOrdered.setFood(foodsEntity);
                 foodOrdered.setQuantity(request.getFoodOrder().getQuantity());
                 foodOrdered.setTotalPrice(request.getFoodOrder().getQuantity() * foodsEntity.getPrice());
                 foodOrderedRepository.save(foodOrdered);
             }
             if (request.getComboOrder() != null) {
-                Integer orderId = entity.getId();
                 ComboEntity comboEntity = comboRepository.findOneById(request.getComboOrder().getComboId());
                 if (comboEntity == null) {
                     throw new IllegalArgumentException("Combo món ăn không tồn tại!");
                 }
-                ComboOrderedId comboOrderedId = new ComboOrderedId(comboEntity.getId(), orderId);
+                ComboOrderedId comboOrderedId = new ComboOrderedId(comboEntity.getId(), ordered.getId());
                 if (comboOrderRepository.existsById(comboOrderedId)) {
                     throw new IllegalArgumentException("Combo đã được thêm vào đơn hàng trước đó!");
                 }
                 ComboOrderEntity comboOrder = new ComboOrderEntity();
                 comboOrder.setId(comboOrderedId);
-                comboOrder.setOrdered(orderedRepository.findOneById(orderId));
+                comboOrder.setOrdered(ordered);
                 comboOrder.setCombo(comboEntity);
                 comboOrder.setQuantity(request.getComboOrder().getQuantity());
                 comboOrder.setTotalPrice(request.getComboOrder().getQuantity() * comboEntity.getPrice());
                 comboOrderRepository.save(comboOrder);
             }
 
-            return ResponseEntity.ok().body("Thêm sản phẩm vào đơn hàng thành công.");
+            return ResponseEntity.ok().body("Gọi món thành công.");
+
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
     @Transactional
-    public ResponseEntity<?> updateOrder (Integer orderId, UserOrderRequest request) {
+    public ResponseEntity<?> updateOrder (Integer orderId, EmployeeOrderRequest request) {
         try {
             if (!orderedRepository.existsById(orderId)) {
                 return ResponseEntity.badRequest().body("Không tồn tại đơn hàng " + orderId +"!");
@@ -164,7 +168,7 @@ public class UserOrderService {
     }
 
     @Transactional
-    public ResponseEntity<?> deleteItemInOrder (Integer orderId, UserOrderRequest request) {
+    public ResponseEntity<?> deleteItemInOrder (Integer orderId, EmployeeOrderRequest request) {
         try {
             if (!orderedRepository.existsById(orderId)) {
                 return ResponseEntity.badRequest().body("Không tồn tại đơn hàng có mã: " + orderId);
@@ -208,7 +212,7 @@ public class UserOrderService {
             List<FoodOrderedEntity> foodOrderedEntities = foodOrderedRepository.findByOrderedId(orderId);
             AtomicLong totalPrice = new AtomicLong(0L);
             if (foodOrderedEntities != null && !foodOrderedEntities.isEmpty()) {
-                for(FoodOrderedEntity foodOrdered : foodOrderedEntities) {
+                for (FoodOrderedEntity foodOrdered : foodOrderedEntities) {
                     totalPrice.set(totalPrice.get() + foodOrdered.getTotalPrice());
                 }
             }
@@ -225,7 +229,7 @@ public class UserOrderService {
                     comboRepository.save(comboEntity);
                 }
             }
-            if (totalPrice.get() == 0L ) {
+            if (totalPrice.get() == 0L) {
                 return ResponseEntity.badRequest().body("Đơn hàng chưa có sản phẩm!");
             }
             BillEntity bill = new BillEntity();
@@ -253,10 +257,9 @@ public class UserOrderService {
             billOrdered.setBill(saveBill);
             billOrdered.setOrdered(ordered);
             billOrderRepository.save(billOrdered);
-
-
-            return ResponseEntity.ok().body("Thanh toán thành công.");
-        }catch (Exception e) {
+            EmployeeOrderResponse response = EmployeeOrderMapper.mapToResponse(bill, ordered, comboOrderEntities, foodOrderedEntities);
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }

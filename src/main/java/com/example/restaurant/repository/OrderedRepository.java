@@ -16,6 +16,9 @@ public interface OrderedRepository extends JpaRepository<OrderedEntity, Integer>
     @Query(value = "select * from ordered where customerId = :id and status =:status", nativeQuery = true)
     OrderedEntity findByCustomerIdAndStatus (@Param("id") Integer customerId, @Param("status") String status);
 
+    @Query(value = "select * from ordered where id = :id and status =:status", nativeQuery = true)
+    OrderedEntity findByIdAndStatus(@Param("id") Integer id, @Param("status") String status);
+
     @Query(value = "select * from ordered where customerId = :id", nativeQuery = true)
     List<OrderedEntity> findByCustomerId (@Param("id") Integer customerId);
 }
