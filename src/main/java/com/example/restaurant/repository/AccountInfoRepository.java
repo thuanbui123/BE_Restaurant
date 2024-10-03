@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,9 @@ public interface AccountInfoRepository extends JpaRepository<AccountInfo, Intege
     AccountInfo findOneBySlug(@Param("slug") String slug);
 
     List<AccountInfo> findByRole(String role);
+
+    @Query(value = "select count(*) from account where role = 'ROLE_USER' AND created_at between :startDate and :endDate", nativeQuery = true)
+    Long countNewAccountsByRoleUserBetweenDates (@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     Page<AccountInfo> findBySlugContainingIgnoreCaseAndRole (String slug, String role, Pageable pageable);
 }

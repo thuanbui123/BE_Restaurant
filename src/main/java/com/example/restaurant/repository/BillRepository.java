@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -17,6 +18,9 @@ public interface BillRepository extends JpaRepository<BillEntity, Integer> {
             "ORDER BY CASE WHEN b.status = 'chờ xử lý' THEN 0 ELSE 1 END, b.created_at DESC",
             nativeQuery = true)
     List<BillEntity> findByCustomerId (@Param("id") Integer id);
+
+    @Query(value = "select sum(totalPrice) from bill where created_at between :startDate and :endDate", nativeQuery = true)
+    Long sumTotalRevenueBetweenDates (@Param("startDate")LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     boolean existsByCode(String code);
 

@@ -81,6 +81,8 @@ public class SecurityConfig {
 
     private final String apiEmployeeOrder = ApiConfig.API_EMPLOYEE_ORDER_PREFIX;
 
+    private final String apiStatisticsPrefix = ApiConfig.API_STATISTICS_PREFIX;
+
     final List<Pair<String, String>> bypassTokens = Arrays.asList(
             Pair.of(String.format("%s/authenticate", apiAuthPrefix), "POST"),
             Pair.of(String.format("%s/register", apiAuthPrefix), "POST"),
@@ -139,7 +141,27 @@ public class SecurityConfig {
             Pair.of(String.format("%s/add", apiFoodCategoryLinkPrefix), "POST"),
             Pair.of(String.format("%s/delete", apiFoodCategoryLinkPrefix), "DELETE"),
             Pair.of(String.format("%s/add", apiComboFoodPrefix), "POST"),
-            Pair.of(String.format("%s/delete", apiComboFoodPrefix), "DELETE")
+            Pair.of(String.format("%s/delete", apiComboFoodPrefix), "DELETE"),
+            Pair.of(String.format("%s/{prefix}", apiSupplierPrefix), "GET"),
+            Pair.of(String.format("%s/{prefix}", apiOrderTableLinkPrefix), "GET"),
+            Pair.of(String.format("%s/add", apiOrderTableLinkPrefix), "POST"),
+            Pair.of(String.format("%s/add", apiSupplierPrefix), "POST"),
+            Pair.of(String.format("%s/update/{code}", apiSupplierPrefix), "PUT"),
+            Pair.of(String.format("%s/{prefix}", apiCustomerPrefix), "GET"),
+            Pair.of(String.format("%s/add", apiCustomerPrefix), "POST"),
+            Pair.of(String.format("%s/update/{code}", apiCustomerPrefix), "PUT"),
+            Pair.of(String.format("%s/{prefix}", apiInvoiceDetailPrefix), "GET"),
+            Pair.of(String.format("%s/{prefix}", apiImportInvoicePrefix), "GET"),
+            Pair.of(String.format("%s/{prefix}", apiIngredientsPrefix), "GET"),
+            Pair.of(String.format("%s/update/{code}", apiBillPrefix), "PUT"),
+            Pair.of(String.format("%s/{prefix}", apiIngredientCategoryLinkPrefix), "GET"),
+            Pair.of(String.format("%s/check-in-reservation/{tableBookingId}", apiTableBookingPrefix), "PUT"),
+            Pair.of(String.format("%s/change-table/{tableBookingId}", apiTableBookingPrefix), "PUT"),
+            Pair.of(String.format("%s/call-order", apiEmployeeOrder), "POST"),
+            Pair.of(String.format("%s/update-ordered", apiEmployeeOrder), "PUT"),
+            Pair.of(String.format("%s/delete-item-in-order", apiEmployeeOrder), "DELETE"),
+            Pair.of(String.format("%s/order-payment", apiEmployeeOrder), "POST"),
+            Pair.of(String.format("%s/cancel-order", apiEmployeeOrder), "PUT")
     );
 
     final List<Pair<String, String>> noBypassTokensUsers = Arrays.asList(
@@ -162,29 +184,18 @@ public class SecurityConfig {
     );
 
     final List<Pair<String, String>> noBypassTokenAdmins = Arrays.asList(
-            Pair.of(String.format("%s/{prefix}", apiSupplierPrefix), "GET"),
-            Pair.of(String.format("%s/{prefix}", apiOrderTableLinkPrefix), "GET"),
-            Pair.of(String.format("%s/add", apiOrderTableLinkPrefix), "POST"),
-            Pair.of(String.format("%s/add", apiSupplierPrefix), "POST"),
-            Pair.of(String.format("%s/update/{code}", apiSupplierPrefix), "PUT"),
-            Pair.of(String.format("%s/{prefix}", apiCustomerPrefix), "GET"),
-            Pair.of(String.format("%s/add", apiCustomerPrefix), "POST"),
-            Pair.of(String.format("%s/update/{code}", apiCustomerPrefix), "PUT"),
-            Pair.of(String.format("%s/{prefix}", apiInvoiceDetailPrefix), "GET"),
-            Pair.of(String.format("%s/{prefix}", apiImportInvoicePrefix), "GET"),
-            Pair.of(String.format("%s/{prefix}", apiIngredientsPrefix), "GET"),
-            Pair.of(String.format("%s/update/{code}", apiBillPrefix), "PUT"),
-            Pair.of(String.format("%s/{prefix}", apiIngredientCategoryLinkPrefix), "GET")
-    );
-
-    final List<Pair<String, String>> noBypassTokenEmployees = Arrays.asList(
-            Pair.of(String.format("%s/check-in-reservation/{tableBookingId}", apiTableBookingPrefix), "PUT"),
-            Pair.of(String.format("%s/change-table/{tableBookingId}", apiTableBookingPrefix), "PUT"),
-            Pair.of(String.format("%s/call-order", apiEmployeeOrder), "POST"),
-            Pair.of(String.format("%s/update-ordered", apiEmployeeOrder), "PUT"),
-            Pair.of(String.format("%s/delete-item-in-order", apiEmployeeOrder), "DELETE"),
-            Pair.of(String.format("%s/order-payment", apiEmployeeOrder), "POST"),
-            Pair.of(String.format("%s/cancel-order", apiEmployeeOrder), "PUT")
+            Pair.of(String.format("%s/new-users/weekly", apiStatisticsPrefix), "GET"),
+            Pair.of(String.format("%s/new-users/monthly", apiStatisticsPrefix), "GET"),
+            Pair.of(String.format("%s/new-users/year", apiStatisticsPrefix), "GET"),
+            Pair.of(String.format("%s/revenue/year/{year}", apiStatisticsPrefix), "GET"),
+            Pair.of(String.format("%s/top-selling/foods/day", apiStatisticsPrefix), "GET"),
+            Pair.of(String.format("%s/top-selling/foods/month", apiStatisticsPrefix), "GET"),
+            Pair.of(String.format("%s/top-selling/foods/year", apiStatisticsPrefix), "GET"),
+            Pair.of(String.format("%s/revenue/week", apiStatisticsPrefix), "GET"),
+            Pair.of(String.format("%s/revenue/month", apiStatisticsPrefix), "GET"),
+            Pair.of(String.format("%s/top-selling/combos/day", apiStatisticsPrefix), "GET"),
+            Pair.of(String.format("%s/top-selling/combos/month", apiStatisticsPrefix), "GET"),
+            Pair.of(String.format("%s/top-selling/combos/year", apiStatisticsPrefix), "GET")
     );
 
     @Autowired
@@ -208,7 +219,7 @@ public class SecurityConfig {
                     }
 
                     for (Pair<String, String> nobypassToken : noBypassTokens) {
-                        auth.requestMatchers(nobypassToken.getSecond(), nobypassToken.getFirst()).hasAuthority("ROLE_EMPLOYEE_ADMIN");
+                        auth.requestMatchers(nobypassToken.getSecond(), nobypassToken.getFirst()).hasAnyAuthority("ROLE_EMPLOYEE", "ROLE_EMPLOYEE_ADMIN");
                     }
 
                     for (Pair<String, String> nobyPassTokenUser : noBypassTokensUsers) {
@@ -216,11 +227,7 @@ public class SecurityConfig {
                     }
 
                     for (Pair<String, String> nobyPassTokenAdmin : noBypassTokenAdmins) {
-                        auth.requestMatchers(nobyPassTokenAdmin.getSecond(), nobyPassTokenAdmin.getFirst()).hasAnyAuthority("ROLE_EMPLOYEE", "ROLE_EMPLOYEE_ADMIN");
-                    }
-
-                    for (Pair<String, String> noByPassTokenEmployee : noBypassTokenEmployees) {
-                        auth.requestMatchers(noByPassTokenEmployee.getSecond(), noByPassTokenEmployee.getFirst()).hasAnyAuthority("ROLE_EMPLOYEE");
+                        auth.requestMatchers(nobyPassTokenAdmin.getSecond(), nobyPassTokenAdmin.getFirst()).hasAnyAuthority("ROLE_EMPLOYEE_ADMIN");
                     }
 
                     auth
