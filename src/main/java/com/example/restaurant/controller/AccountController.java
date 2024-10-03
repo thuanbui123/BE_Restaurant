@@ -26,7 +26,7 @@ public class AccountController {
         return service.findData(page, size, prefix, query);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PostMapping("/add")
     public ResponseEntity<?> addAccount(@Valid @RequestBody AccountRequest accountRequest, BindingResult result) {
         if (result.hasErrors()) {
@@ -38,16 +38,16 @@ public class AccountController {
         return service.addAccount(accountRequest);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
-    @PutMapping("/update/{prefix}")
-    public ResponseEntity<?> updateAccount (@PathVariable String prefix, @Valid @RequestBody EditAccountRequest accountRequest, BindingResult result) {
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
+    @PutMapping("/update/{code}")
+    public ResponseEntity<?> updateAccount (@PathVariable String code, @Valid @RequestBody EditAccountRequest accountRequest, BindingResult result) {
         if (result.hasErrors()) {
             String errors = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .collect(Collectors.joining(", "));
             return ResponseEntity.badRequest().body(new ErrorResponse(errors));
         }
-        return service.updateData(prefix, accountRequest);
+        return service.updateData(code, accountRequest);
     }
 
     @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")

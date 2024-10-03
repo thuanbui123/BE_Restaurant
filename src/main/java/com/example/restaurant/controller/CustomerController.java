@@ -18,13 +18,13 @@ public class CustomerController {
     @Autowired
     private CustomerService service;
 
-    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @GetMapping("/{prefix}")
     public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size, @RequestParam(required = false) String query) {
         return service.findData(prefix, page, size, query);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @PostMapping("/add")
     public ResponseEntity<?> addData (@Valid @RequestBody CustomerRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -36,7 +36,7 @@ public class CustomerController {
         return service.addData(request);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @PutMapping("/update/{code}")
     public ResponseEntity<?> updateData (@PathVariable String code, @Valid @RequestBody CustomerRequest request, BindingResult result) {
         if (result.hasErrors()) {
