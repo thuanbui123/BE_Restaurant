@@ -50,13 +50,13 @@ public class TableBookingController {
         return service.cancelData(id, request);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PutMapping("/check-in-reservation/{tableBookingId}")
     public ResponseEntity<?> checkInReservation (@PathVariable Integer tableBookingId, @RequestParam(name = "table-id") Integer tableId) {
         return service.checkInReservation(tableBookingId, tableId);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PutMapping("/change-table/{tableBookingId}")
     public ResponseEntity<?> changeTable (@PathVariable Integer tableBookingId,
                                           @RequestParam(name = "new-table-id") Integer newTableId) {

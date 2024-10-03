@@ -107,10 +107,6 @@ public class SecurityConfig {
             Pair.of(String.format("%s/add", apiFoodPrefix), "POST"),
             Pair.of(String.format("%s/update/{code}", apiFoodPrefix), "PUT"),
             Pair.of(String.format("%s/delete/{code}", apiFoodPrefix), "DELETE"),
-            Pair.of(String.format("%s/{prefix}", apiEmployeePrefix), "GET"),
-            Pair.of(String.format("%s/add", apiEmployeePrefix), "POST"),
-            Pair.of(String.format("%s/update/{code}", apiEmployeePrefix), "PUT"),
-            Pair.of(String.format("%s/delete/{code}", apiEmployeePrefix), "DELETE"),
             Pair.of(String.format("%s/delete/{code}", apiCustomerPrefix), "DELETE"),
             Pair.of(String.format("%s/delete/{code}", apiSupplierPrefix), "DELETE"),
             Pair.of(String.format("%s/add", apiBlogPostPrefix), "POST"),
@@ -195,7 +191,11 @@ public class SecurityConfig {
             Pair.of(String.format("%s/revenue/month", apiStatisticsPrefix), "GET"),
             Pair.of(String.format("%s/top-selling/combos/day", apiStatisticsPrefix), "GET"),
             Pair.of(String.format("%s/top-selling/combos/month", apiStatisticsPrefix), "GET"),
-            Pair.of(String.format("%s/top-selling/combos/year", apiStatisticsPrefix), "GET")
+            Pair.of(String.format("%s/top-selling/combos/year", apiStatisticsPrefix), "GET"),
+            Pair.of(String.format("%s/{prefix}", apiEmployeePrefix), "GET"),
+            Pair.of(String.format("%s/add", apiEmployeePrefix), "POST"),
+            Pair.of(String.format("%s/update/{code}", apiEmployeePrefix), "PUT"),
+            Pair.of(String.format("%s/delete/{code}", apiEmployeePrefix), "DELETE")
     );
 
     @Autowired

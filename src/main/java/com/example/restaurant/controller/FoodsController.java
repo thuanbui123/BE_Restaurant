@@ -28,7 +28,7 @@ public class FoodsController {
         return service.findData(prefix, page, size, query, id, limitFood);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PostMapping("/add")
     public ResponseEntity<?> addData (@Valid @RequestBody FoodsRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -40,7 +40,7 @@ public class FoodsController {
         return service.addFood(request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PutMapping("/update/{code}")
     public ResponseEntity<?> updateData (@PathVariable String code, @Valid @RequestBody FoodsRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -52,7 +52,7 @@ public class FoodsController {
         return service.updateFood(code, request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @DeleteMapping("/delete/{code}")
     public ResponseEntity<?> deleteData (@PathVariable String code) {
         return service.deleteFood(code);

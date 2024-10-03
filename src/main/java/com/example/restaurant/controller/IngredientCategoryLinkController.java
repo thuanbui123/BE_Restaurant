@@ -24,7 +24,7 @@ public class IngredientCategoryLinkController {
         return service.findData(prefix, categoryId);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PostMapping("/add")
     public ResponseEntity<?> addData (@Valid @RequestBody IngredientCategoryLinkRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -36,7 +36,7 @@ public class IngredientCategoryLinkController {
         return service.addData(request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteData (@Valid @RequestBody IngredientCategoryLinkRequest request, BindingResult result) {
         if (result.hasErrors()) {

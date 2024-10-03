@@ -19,13 +19,13 @@ public class SupplierController {
     @Autowired
     private SupplierService service;
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @GetMapping("/{prefix}")
     public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam Integer page, @RequestParam Integer size, @RequestParam(required = false) String query) {
         return service.findData(prefix, page, size, query);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PostMapping("/add")
     public ResponseEntity<?> addData (@Valid @RequestBody SupplierRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -37,7 +37,7 @@ public class SupplierController {
         return service.add(request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PutMapping("/update/{code}")
     public ResponseEntity<?> updateData (@PathVariable String code, @Valid @RequestBody SupplierRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -49,7 +49,7 @@ public class SupplierController {
         return service.updateData(code, request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @DeleteMapping("/delete/{code}")
     public ResponseEntity<?> deleteData (@PathVariable String code) {
         return service.deleteData(code);

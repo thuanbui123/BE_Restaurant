@@ -15,7 +15,7 @@ public class EmployeeOrderController {
     @Autowired
     private EmployeeOrderService service;
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PostMapping("/call-order")
     public ResponseEntity<?> callOrder (@RequestParam(name = "table-id", required = false) Integer tableId,
                                         @RequestParam(name = "customer-id") Integer customerId,
@@ -23,25 +23,25 @@ public class EmployeeOrderController {
         return service.callOrder(tableId, customerId, request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PutMapping(value = "/update-ordered")
     public ResponseEntity<?> updateOrdered (@RequestBody EmployeeOrderRequest request, @RequestParam(value = "order-id") Integer orderId) {
         return service.updateOrder(orderId, request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @DeleteMapping(value = "/delete-item-in-order")
     public ResponseEntity<?> deleteItemInOrdered (@RequestBody EmployeeOrderRequest request, @RequestParam(value = "order-id") Integer orderId) {
         return service.deleteItemInOrder(orderId, request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PostMapping(value = "/order-payment")
     public ResponseEntity<?> orderPayment (@RequestParam(value = "order-id") Integer orderId) {
         return service.orderPayment(orderId);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PutMapping(value = "/cancel-order")
     public ResponseEntity<?> cancelOrder (@RequestParam(value = "order-id") Integer orderId, @Valid @RequestBody CancelOrderRequest note) {
         return service.cancelOrder(orderId, note);

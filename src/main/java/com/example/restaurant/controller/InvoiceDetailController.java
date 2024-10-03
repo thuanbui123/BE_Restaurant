@@ -27,7 +27,7 @@ public class InvoiceDetailController {
         return service.findData(prefix, page, size, query, id);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PostMapping("/add")
     public ResponseEntity<?> addData (@Valid @RequestBody InvoiceDetailRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -39,7 +39,7 @@ public class InvoiceDetailController {
         return service.addData(request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PostMapping("/{code}/add-ingredients")
     public ResponseEntity<?> addIngredientsToInvoice(@PathVariable String code, @Valid @RequestBody List<IngredientDetailRequest> request, BindingResult result) {
         if (result.hasErrors()) {
@@ -51,13 +51,13 @@ public class InvoiceDetailController {
         return service.addIngredientsToInvoice(code, request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @DeleteMapping("/{code}/delete-ingredient/{ingredientId}")
     public ResponseEntity<?> removeIngredientFromInvoice (@PathVariable String code, @PathVariable Integer ingredientId) {
         return service.removeIngredientFromInvoice(code, ingredientId);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PutMapping("/update/{code}")
     public ResponseEntity<?> updateData (@PathVariable String code, @Valid @RequestBody InvoiceDetailRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -69,7 +69,7 @@ public class InvoiceDetailController {
         return service.updateData(code, request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @DeleteMapping("/delete/{code}")
     public ResponseEntity<?> deleteData(@PathVariable String code) {
         return service.deleteData(code);

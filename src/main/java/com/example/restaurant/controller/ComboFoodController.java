@@ -24,7 +24,7 @@ public class ComboFoodController {
         return service.findData(prefix, page, size, id);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @PostMapping("/add")
     public ResponseEntity<?> addData (@Valid @RequestBody ComboFoodRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -36,7 +36,7 @@ public class ComboFoodController {
         return service.addData(request);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE')")
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteData(@RequestParam(name = "combo-id") Integer comboId, @RequestParam("food-id") Integer foodId) {
         return service.deleteData(comboId, foodId);
