@@ -22,6 +22,7 @@ public class FoodsMapper {
 
     public static FoodsResponse mapToResponse (FoodsEntity entity) {
         FoodsResponse response = new FoodsResponse();
+        response.setId(entity.getId());
         response.setCode(entity.getCode());
         response.setName(entity.getName());
         response.setPrice(entity.getPrice());

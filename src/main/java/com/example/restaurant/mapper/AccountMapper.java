@@ -40,6 +40,7 @@ public class AccountMapper {
 
     public static AccountResponse maToAccountResponse (AccountInfo accountInfo) {
         AccountResponse response = new AccountResponse();
+        response.setId(accountInfo.getId());
         response.setUsername(accountInfo.getUsername());
         response.setRole(accountInfo.getRole());
         response.setImg(accountInfo.getImg());

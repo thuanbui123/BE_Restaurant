@@ -25,7 +25,7 @@ public class UploadFileController {
             String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             Path filePath = Paths.get(UPLOAD_DIR + fileName);
             Files.write(filePath, file.getBytes());
-            return new ResponseEntity<>("http://localhost:8080/uploads/" + fileName, HttpStatus.OK);
+            return new ResponseEntity<>("http://localhost:8080/api-restaurant/uploads/" + fileName, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error uploading file", HttpStatus.INTERNAL_SERVER_ERROR);
         }

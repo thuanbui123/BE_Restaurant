@@ -22,7 +22,9 @@ public class FoodCategoryLinkService {
     private ResponseEntity<?> findFoodsByCategoryId (Integer categoryId) {
         List<FoodCategoryLinkEntity> entities = repository.findFoodByCategoryId(categoryId);
         FoodCategoryLinkResponse linkResponses = FoodCategoryLinkMapper.mapToResponse(entities);
-        linkResponses.sortIngredientsByCreateAt();
+        if (linkResponses != null ) {
+            linkResponses.sortIngredientsByCreateAt();
+        }
         return ResponseEntity.ok().body(linkResponses);
     }
 

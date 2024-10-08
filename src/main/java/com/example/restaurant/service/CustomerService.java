@@ -58,6 +58,9 @@ public class CustomerService {
             return findBySlug(query, pageable);
         } else if (prefix.equals("find-one-by-code") && query != null) {
             return findOneByCode(query);
+        } else if (prefix.equals("find-one-by-account-id") && query != null) {
+            Integer id = Integer.parseInt(query);
+            return ResponseEntity.ok().body(repository.findOneByAccountId(id));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("API không tồn tại!");
     }

@@ -36,16 +36,19 @@ public class FoodCategoryLinkMapper {
     }
 
     public static FoodCategoryLinkResponse mapToResponse (List<FoodCategoryLinkEntity> entities) {
-        FoodCategoryLinkResponse response = new FoodCategoryLinkResponse();
-        response.setFoodCategoryName(entities.get(0).getFoodCategory().getName());
-        List<FoodsResponse> foodsResponses = entities.stream()
-                .map( entity -> {
-                            FoodsEntity foods = entity.getFoods();
-                            return FoodsMapper.mapToResponse(foods);
-                        }
-                )
-                .toList();
-        response.setFoodsResponses(foodsResponses);
-        return response;
+        if(!entities.isEmpty()) {
+            FoodCategoryLinkResponse response = new FoodCategoryLinkResponse();
+            response.setFoodCategoryName(entities.get(0).getFoodCategory().getName());
+            List<FoodsResponse> foodsResponses = entities.stream()
+                    .map( entity -> {
+                                FoodsEntity foods = entity.getFoods();
+                                return FoodsMapper.mapToResponse(foods);
+                            }
+                    )
+                    .toList();
+            response.setFoodsResponses(foodsResponses);
+            return response;
+        }
+        return null;
     }
 }

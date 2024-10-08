@@ -23,8 +23,10 @@ public interface AccountInfoRepository extends JpaRepository<AccountInfo, Intege
 
     List<AccountInfo> findByRole(String role);
 
+    Page<AccountInfo> findByRoleNot(String role, Pageable pageable);
+
     @Query(value = "select count(*) from account where role = 'ROLE_USER' AND created_at between :startDate and :endDate", nativeQuery = true)
     Long countNewAccountsByRoleUserBetweenDates (@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
-    Page<AccountInfo> findBySlugContainingIgnoreCaseAndRole (String slug, String role, Pageable pageable);
+    Page<AccountInfo> findBySlugContainingIgnoreCase (String slug, Pageable pageable);
 }

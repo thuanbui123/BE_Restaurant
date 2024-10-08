@@ -4,6 +4,7 @@ import com.example.restaurant.entity.TablesEntity;
 import com.example.restaurant.mapper.TableMapper;
 import com.example.restaurant.repository.TablesRepository;
 import com.example.restaurant.request.TablesRequest;
+import com.example.restaurant.response.TablesResponse;
 import com.example.restaurant.utils.PaginateUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,11 +22,11 @@ public class TablesService {
     @Autowired
     private TablesRepository repository;
 
-    public ResponseEntity<?> findAll (Pageable pageable) {
-        return PaginateUtil.paginate(
-                repository::findAllTable,
-                pageable,
-                TableMapper::mapToResponse
+    public ResponseEntity<?> findAll () {
+        return ResponseEntity.ok().body(
+                repository.findAll().stream()
+                        .map(TableMapper::mapToResponse)
+                        .toList()
         );
     }
 
@@ -36,11 +38,26 @@ public class TablesService {
         );
     }
 
+    public List<String> getDistinctLocations() {
+        return repository.findDistinctLocations();
+    }
+
+    public List<TablesResponse> getTablesByLocation(String location) {
+        return repository.findByLocation(location).stream()
+                .map(TableMapper::mapToResponse)
+                .toList();
+    }
+
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
-        Pageable pageable = PageRequest.of(page, size);
+
         if (prefix.equals("find-all") && query == null) {
-            return findAll(pageable);
+            return findAll();
+        } else if (prefix.equals("locations") && query == null) {
+            return ResponseEntity.ok().body(getDistinctLocations());
+        }  else if (prefix.equals("get-tables-by-location") && query != null) {
+            return ResponseEntity.ok().body(getTablesByLocation(query));
         } else if (prefix.equals("search") && query != null) {
+            Pageable pageable = PageRequest.of(page, size);
             return findByCode(query, pageable);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("API không tồn tại!");

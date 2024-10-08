@@ -37,7 +37,7 @@ public class ComboOrderedController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public ResponseEntity<?> deleteData (@Valid @RequestBody ComboOrderedRequest request, BindingResult result) {
         if (result.hasErrors()) {
             String errors = result.getAllErrors().stream()

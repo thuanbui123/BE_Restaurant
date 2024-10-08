@@ -37,14 +37,8 @@ public class FoodOrderController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteData (@Valid @RequestBody FoodOrderedRequest request, BindingResult result) {
-        if (result.hasErrors()) {
-            String errors = result.getAllErrors().stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(new ErrorResponse(errors));
-        }
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteData (@RequestBody FoodOrderedRequest request) {
         return service.deleteData(request);
     }
 }

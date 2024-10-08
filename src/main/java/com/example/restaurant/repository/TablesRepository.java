@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TablesRepository extends JpaRepository<TablesEntity, Integer> {
     Page<TablesEntity> findByCodeContainingIgnoreCase(String code, Pageable pageable);
@@ -16,6 +18,14 @@ public interface TablesRepository extends JpaRepository<TablesEntity, Integer> {
     Page<TablesEntity> findAllTable (Pageable pageable);
 
     boolean existsByCode(String code);
+
+    @Query(value = "SELECT DISTINCT t.location FROM tables t where id <> 1", nativeQuery = true)
+    List<String> findDistinctLocations();
+
+    List<TablesEntity> findByLocation(String location);
+
+    @Query(value = "select * from tables where id <> 1", nativeQuery = true)
+    List<TablesEntity> findAll();
 
     @Query(value = "select count(*) from tables where code <> 'TBL000'", nativeQuery = true)
     Integer totalTable();

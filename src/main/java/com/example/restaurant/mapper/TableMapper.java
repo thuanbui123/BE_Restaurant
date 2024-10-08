@@ -15,6 +15,7 @@ public class TableMapper {
 
     public static TablesResponse mapToResponse (TablesEntity entity) {
         TablesResponse response = new TablesResponse();
+        response.setId(entity.getId());
         response.setCode(entity.getCode());
         response.setLocation(entity.getLocation());
         response.setStatus(entity.getStatus());

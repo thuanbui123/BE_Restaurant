@@ -38,11 +38,10 @@ public class ComboService {
                 ComboMapper::mapToResponse);
     }
 
-    public ResponseEntity<?> findAllUser (Pageable pageable) {
-        return PaginateUtil.paginate(
-                repository::findAll,
-                pageable,
-                ComboMapper::mapToUserResponse);
+    public ResponseEntity<?> findAllUser () {
+        return ResponseEntity.ok(repository.findAll().stream()
+                .map(ComboMapper::mapToUserResponse)
+                .toList());
     }
 
     public ResponseEntity<?> findBySlug (String slug, Pageable pageable) {
@@ -62,14 +61,16 @@ public class ComboService {
     }
 
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
-        Pageable pageable =  PageRequest.of(page, size);
+
         if (prefix.equals("find-all") && query == null) {
+            Pageable pageable =  PageRequest.of(page, size);
             return findAll(pageable);
         } else if (prefix.equals("search") && query != null) {
             final String slug = Slugify.toSlug(query);
+            Pageable pageable =  PageRequest.of(page, size);
             return findBySlug(slug, pageable);
         } else if (prefix.equals("find-all-user") && query == null) {
-            return findAllUser(pageable);
+            return findAllUser();
         }
         return new ResponseEntity<>("API không tồn tại!", HttpStatus.NOT_FOUND);
     }

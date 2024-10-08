@@ -20,7 +20,7 @@ public class AccountController {
     @Autowired
     private AccountService service;
 
-    @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @GetMapping("/{prefix}")
     public ResponseEntity<?> findData (@PathVariable String prefix, @RequestParam(required = false) Integer page,  @RequestParam(required = false) Integer size, @RequestParam(required = false) String query) {
         return service.findData(page, size, prefix, query);
@@ -40,7 +40,7 @@ public class AccountController {
 
     @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @PutMapping("/update/{code}")
-    public ResponseEntity<?> updateAccount (@PathVariable String code, @Valid @RequestBody EditAccountRequest accountRequest, BindingResult result) {
+    public ResponseEntity<?> updateAccount (@PathVariable Integer code, @Valid @RequestBody EditAccountRequest accountRequest, BindingResult result) {
         if (result.hasErrors()) {
             String errors = result.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
@@ -52,7 +52,7 @@ public class AccountController {
 
     @PreAuthorize("hasAuthority('ROLE_EMPLOYEE_ADMIN')")
     @DeleteMapping("/delete/{prefix}")
-    public ResponseEntity<?> deleteAccount (@PathVariable String prefix) {
+    public ResponseEntity<?> deleteAccount (@PathVariable Integer prefix) {
         return service.deleteData(prefix);
     }
 }

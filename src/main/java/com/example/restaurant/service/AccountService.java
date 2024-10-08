@@ -118,26 +118,22 @@ public class AccountService implements UserDetailsService {
         return PaginateUtil.paginate(repository::findAll, pageable, AccountMapper::maToAccountResponse);
     }
 
-    public ResponseEntity<?> findAll () {
-        List<Integer> accountIdList = service.getAccountIdList();
-        List<AccountInfoResponse> responses = repository.findAll().stream()
-                .filter(accountInfo -> !accountIdList.contains(accountInfo.getId()) && accountInfo.getRole().equals("ROLE_EMPLOYEE"))
-                .map(accountInfo -> new AccountInfoResponse(
-                        accountInfo.getId(),
-                        accountInfo.getUsername()
-                ))
-                .toList();
-        return ResponseEntity.ok().body(responses);
-    }
-
     public ResponseEntity<?> findByRole(String role) {
         return ResponseEntity.ok().body(repository.findByRole(role));
+    }
+
+    public ResponseEntity<?> findByRoleNot(String role, Pageable pageable) {
+        return PaginateUtil.paginate(
+                (pg) -> repository.findByRoleNot(role, pageable),
+                pageable,
+                AccountMapper::maToAccountResponse
+        );
     }
 
     public ResponseEntity<?> findBySlug (String query, Pageable pageable) {
         final String slug = Slugify.toSlug(query);
         return PaginateUtil.paginate(
-                (pg) -> repository.findBySlugContainingIgnoreCaseAndRole(slug, "ROLE_EMPLOYEE", pg),
+                (pg) -> repository.findBySlugContainingIgnoreCase(slug, pg),
                 pageable,
                 AccountMapper::maToAccountResponse
         );
@@ -152,21 +148,25 @@ public class AccountService implements UserDetailsService {
         if ("get-account-employee".equals(prefix) && query == null) {
             return findByRole("ROLE_EMPLOYEE");
         } else if ("get-accounts".equals(prefix) && query == null) {
-            return findAll();
+            Pageable pageable = PageRequest.of(page, size);
+            return findByRoleNot("ROLE_EMPLOYEE_ADMIN", pageable);
         } else if ("search".equals(prefix) && query != null) {
+            query = Slugify.toSlug(query);
             Pageable pageable = PageRequest.of(page, size);
             return findBySlug(query, pageable);
         } else if ("get-accounts-user".equals(prefix) && query == null) {
             return findByRole("ROLE_USER");
+        } else if ("find-account-by-id".equals(prefix) && query != null) {
+            Integer id = Integer.parseInt(query);
+            return ResponseEntity.ok().body(findOneById(id));
         }
         return new ResponseEntity<>("API không tồn tại!", HttpStatus.NOT_FOUND);
     }
 
     @Transactional
-    public ResponseEntity<?> updateData (String query, EditAccountRequest request) {
+    public ResponseEntity<?> updateData (Integer query, EditAccountRequest request) {
         try {
-            String slug = Slugify.toSlug(query);
-            AccountInfo existsAccount = repository.findOneBySlug(slug);
+            AccountInfo existsAccount = repository.findOneById(query);
             if (existsAccount == null) {
                 return new ResponseEntity<>("Tài khoản không tồn tại!" , HttpStatus.NOT_FOUND);
             }
@@ -178,9 +178,9 @@ public class AccountService implements UserDetailsService {
     }
 
     @Transactional
-    public ResponseEntity<?> deleteData (String slug) {
+    public ResponseEntity<?> deleteData (Integer slug) {
         try {
-            AccountInfo accountInfo = repository.findOneBySlug(slug);
+            AccountInfo accountInfo = repository.findOneById(slug);
             if (accountInfo == null) {
                 return new ResponseEntity<>("Tài khoản không tồn tại!", HttpStatus.NOT_FOUND);
             }

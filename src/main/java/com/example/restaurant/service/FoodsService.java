@@ -70,6 +70,9 @@ public class FoodsService {
             Pageable pageable = PageRequest.of(page, size);
             String slug = Slugify.toSlug(query);
             return findBySlug(slug, pageable);
+        } else if (prefix.equals("find-one-by-id") && query != null) {
+            Integer foodId = Integer.parseInt(query);
+            return ResponseEntity.ok().body(FoodsMapper.mapToResponse(repository.findOneById(foodId)));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("API không tồn tại!");
     }
@@ -95,9 +98,6 @@ public class FoodsService {
         try {
             if (!repository.existsByCode(code)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Món ăn không tồn tại!");
-            }
-            if (repository.existsByName(request.getName())) {
-                return ResponseEntity.badRequest().body("Tên món ăn đã tồn tại!");
             }
             FoodsEntity existsEntity = repository.findOneByCode(code);
             existsEntity.setName(request.getName());
