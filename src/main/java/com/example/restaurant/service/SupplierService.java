@@ -30,6 +30,14 @@ public class SupplierService {
                 SupplierMapper::mapToResponse);
     }
 
+    public ResponseEntity<?> getList () {
+        return ResponseEntity.ok(
+                repository.findAll().stream()
+                        .map(SupplierMapper::mapToResponse)
+                        .toList()
+        );
+    }
+
     public ResponseEntity<?> findBySlug (String slug, Pageable pageable) {
         return PaginateUtil.paginate(
                 (pg) -> repository.findBySlugContainingIgnoreCase(slug, pageable),
@@ -39,10 +47,14 @@ public class SupplierService {
     }
 
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
-        Pageable pageable = PageRequest.of(page, size);
+
         if (prefix.equals("find-all") && query == null) {
+            Pageable pageable = PageRequest.of(page, size);
             return findAll(pageable);
+        } else if (prefix.equals("get-list") && query == null) {
+            return getList();
         } else if (prefix.equals("search") && query != null) {
+            Pageable pageable = PageRequest.of(page, size);
             return findBySlug(query, pageable);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("API không tồn tại!");

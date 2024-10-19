@@ -62,6 +62,10 @@ public class EmployeeService {
         return repository.findOneById(employeeId);
     }
 
+    public EmployeeEntity findOneByAccountId (Integer employeeId) {
+        return repository.findOneByAccountId(employeeId);
+    }
+
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
         if (prefix.equals("find-all") && query == null) {
             Pageable pageable = PageRequest.of(page, size);
@@ -71,6 +75,8 @@ public class EmployeeService {
             return findBySlug(query, pageable);
         } else if (prefix.equals("find-one-by-code") && query != null) {
             return findOneByCode(query);
+        } else if (prefix.equals("find-one-by-account-id") && query != null) {
+            return ResponseEntity.ok(findOneByAccountId(Integer.parseInt(query)));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("API không tồn tại!");
     }

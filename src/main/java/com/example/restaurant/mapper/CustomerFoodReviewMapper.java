@@ -34,15 +34,15 @@ public class CustomerFoodReviewMapper {
         CustomerFoodReviewEntity entity = new CustomerFoodReviewEntity();
         entity.setQuantityStars(request.getQuantityStars());
         entity.setComment(request.getComment());
-        entity.setCustomers(customersEntity);
+        entity.setCustomersEntity(customersEntity);
         entity.setFoods(foods);
         return entity;
     }
 
     public static CustomerFoodReviewResponse mapToResponse (CustomerFoodReviewEntity entity) {
         CustomerFoodReviewResponse response = new CustomerFoodReviewResponse();
-        response.setAvatar(entity.getCustomers().getAccount().getImg());
-        response.setCustomerName(entity.getCustomers().getName());
+        response.setAvatar(entity.getCustomersEntity().getAccount().getImg());
+        response.setCustomerName(entity.getCustomersEntity().getName());
         response.setQuantityStars(entity.getQuantityStars());
         response.setComment(entity.getComment());
         response.setPostDate(TimeConvertUtil.convertTimestampToDate(entity.getCreatedAt()));

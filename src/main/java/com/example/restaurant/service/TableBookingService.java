@@ -22,6 +22,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TableBookingService {
@@ -40,11 +41,11 @@ public class TableBookingService {
     @Autowired
     private OrderedTableRepository orderedTableRepository;
 
-    private ResponseEntity<?> findByStatus (String status, Pageable pageable) {
-        return PaginateUtil.paginate(
-                pg -> repository.findByStatus(status, pageable),
-                pageable,
-                TableBookingMapper::mapToResponse
+    private ResponseEntity<?> findByStatus (String status) {
+        return ResponseEntity.ok().body(
+                repository.findByStatus(status).stream()
+                .map(TableBookingMapper::mapToResponse)
+                .collect(Collectors.toList())
         );
     }
 
@@ -67,8 +68,7 @@ public class TableBookingService {
 
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query, Integer id) {
         if (prefix.equals("find-by-status") && query != null && id == null) {
-            Pageable pageable = PageRequest.of(page, size);
-            return findByStatus(query, pageable);
+            return findByStatus(query);
         } else if (prefix.equals("find-by-customer-id") && query == null && id != null) {
             Pageable pageable = PageRequest.of(page, size);
             return findByCustomerId(id, pageable);
@@ -155,7 +155,7 @@ public class TableBookingService {
             List<TablesEntity> tablesEntities = new ArrayList<>();
             tablesEntities.add(tablesEntity);
             ordered.setTables(tablesEntities);
-            ordered.setCustomer(entity.getCustomer());
+            ordered.setCustomers(entity.getCustomer());
             ordered.setStatus("Chờ xử lý");
             ordered = orderedRepository.save(ordered);
             OrderedTableEntity orderedTable = new OrderedTableEntity();

@@ -26,11 +26,10 @@ public class CustomerService {
         return repository.findOneById(id);
     }
 
-    public ResponseEntity<?> findAll (Pageable pageable) {
-        return PaginateUtil.paginate(
-                repository::findAll,
-                pageable,
-                CustomerMapper::mapToResponse);
+    public ResponseEntity<?> findAll () {
+        return ResponseEntity.ok(repository.findAll().stream()
+                .map(CustomerMapper::mapToResponse)
+                .toList());
     }
 
     public ResponseEntity<?> findBySlug (String slug, Pageable pageable) {
@@ -49,10 +48,20 @@ public class CustomerService {
         return ResponseEntity.ok().body(CustomerMapper.mapToResponse(repository.findOneByCode(code)));
     }
 
+    public  ResponseEntity<?> getList(Pageable pageable) {
+        return PaginateUtil.paginate(
+                repository::findAll,
+                pageable,
+                CustomerMapper::mapToResponse
+        );
+    }
+
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
         if (prefix.equals("find-all") && query == null) {
+            return findAll();
+        } else if (prefix.equals("get-list") && query == null) {
             Pageable pageable = PageRequest.of(page, size);
-            return findAll(pageable);
+            return getList(pageable);
         } else if (prefix.equals("search") && query != null) {
             Pageable pageable = PageRequest.of(page, size);
             return findBySlug(query, pageable);

@@ -39,7 +39,7 @@ public class RecommendationService {
 
         // Tìm tất cả các khách hàng khác
         List<Integer> otherCustomerIds = customerFoodReviewRepository.findAll().stream()
-                .map(review -> review.getCustomers().getId())
+                .map(review -> review.getCustomersEntity().getId())
                 .distinct()
                 .filter(id -> !id.equals(customerId))
                 .toList();

@@ -1,6 +1,5 @@
 package com.example.restaurant.service;
 
-import com.example.restaurant.entity.ComboEntity;
 import com.example.restaurant.entity.IngredientsEntity;
 import com.example.restaurant.entity.SuppliersEntity;
 import com.example.restaurant.mapper.IngredientsMapper;
@@ -31,12 +30,8 @@ public class IngredientsService {
                 IngredientsMapper::mapToAdminResponse);
     }
 
-    public ResponseEntity<?> findBySlug (String slug, Pageable pageable) {
-        return PaginateUtil.paginate(
-                (pg) -> repository.findBySlugContainingIgnoreCase(slug, pageable),
-                pageable,
-                IngredientsMapper::mapToAdminResponse
-        );
+    public ResponseEntity<?> findBySlug (String slug) {
+        return ResponseEntity.ok().body(repository.findBySlugContainingIgnoreCase(slug));
     }
 
     public IngredientsEntity findById (Integer id) {
@@ -47,13 +42,19 @@ public class IngredientsService {
         return repository.existsById(id);
     }
 
+    public ResponseEntity<?> findOneByCode(String code) {
+        return ResponseEntity.ok().body(IngredientsMapper.mapToAdminResponse(repository.findOneByCode(code)));
+    }
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
-        Pageable pageable = PageRequest.of(page, size);
+
         if (prefix.equals("find-all") && query == null) {
+            Pageable pageable = PageRequest.of(page, size);
             return new ResponseEntity<>(findAll(pageable), HttpStatus.OK);
         } else if (prefix.equals("search") && query != null) {
             final String slug = Slugify.toSlug(query);
-            return new ResponseEntity<>(findBySlug(slug, pageable), HttpStatus.OK);
+            return findBySlug(slug);
+        } else if (prefix.equals("find-one-by-code") && query != null) {
+            return findOneByCode(query);
         }
         return new ResponseEntity<>("API không tồn tại!", HttpStatus.NOT_FOUND);
     }
@@ -87,13 +88,8 @@ public class IngredientsService {
             existsEntity.setQuantity(request.getQuantity());
             existsEntity.setType(request.getType());
             existsEntity.setUnit(request.getUnit());
-            SuppliersEntity suppliersEntity = supplierService.findOneById(request.getSupplierId());
-            if (suppliersEntity != null) {
-                existsEntity.setSuppliersEntity(suppliersEntity);
-                repository.save(existsEntity);
-                return ResponseEntity.ok().body("Cập nhật thông tin nguyên liệu thành công.");
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Không tồn tại nhà cung cấp!");
+            repository.save(existsEntity);
+            return ResponseEntity.ok().body("Cập nhật thông tin nguyên liệu thành công.");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Đã có lỗi xảy ra khi cập nhật thông tin nguyên liệu: " + e.getMessage());
         }

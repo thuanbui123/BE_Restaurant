@@ -56,6 +56,43 @@ public class FoodOrderService {
     }
 
     @Transactional
+    public ResponseEntity<?> updateData(FoodOrderedRequest request) {
+        try {
+            if (repository.findByOrderedId(request.getOrderedId()) == null) {
+                return ResponseEntity.badRequest().body("Đơn hàng có mã: " + request.getOrderedId() + " không tồn tại.");
+            }
+
+            for (FoodOrderedDetailRequest foodRequest : request.getDetailRequests()) {
+                FoodOrderedId foodOrderedId = new FoodOrderedId(request.getOrderedId(), foodRequest.getFoodId());
+                if (!repository.existsById(foodOrderedId)) {
+                    return ResponseEntity.badRequest().body("Món ăn có mã: " + foodRequest.getFoodId() + " không tồn tại trong đơn hàng có mã: " + request.getOrderedId());
+                }
+            }
+
+            for (FoodOrderedDetailRequest foodRequest : request.getDetailRequests()) {
+                FoodOrderedId foodOrderedId = new FoodOrderedId(request.getOrderedId(), foodRequest.getFoodId());
+                FoodOrderedEntity entity = repository.findById(foodOrderedId);
+                if (entity == null) {
+                    return ResponseEntity.badRequest().body("Món ăn không tìm thấy: " + foodRequest.getFoodId());
+                }
+
+                if (!entity.getOrdered().getStatus().equalsIgnoreCase("Chờ xử lý")) {
+                    return ResponseEntity.badRequest().body("Không được cập nhật món ăn vào đơn hàng có trạng thái đã thanh toán hoặc đã hủy!");
+                }
+
+                entity.setQuantity(foodRequest.getQuantity());
+                repository.save(entity);
+            }
+
+            return ResponseEntity.ok("Cập nhật món ăn vào đơn hàng thành công.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+
+    @Transactional
     public ResponseEntity<?> deleteData (FoodOrderedRequest request) {
         try {
             for (FoodOrderedDetailRequest foodRequest : request.getDetailRequests()) {

@@ -58,4 +58,6 @@ public class ApiConfig {
     public static final String API_EMPLOYEE_ORDER_PREFIX = "/employee-order";
 
     public static final String API_STATISTICS_PREFIX = "/statistics";
+
+    public static final String API_ORDER_PREFIX = "/order";
 }

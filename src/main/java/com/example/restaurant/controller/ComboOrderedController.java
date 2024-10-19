@@ -37,6 +37,18 @@ public class ComboOrderedController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
+    @PutMapping("/update")
+    public ResponseEntity<?> updateData (@Valid @RequestBody ComboOrderedRequest request, BindingResult result) {
+        if (result.hasErrors()) {
+            String errors = result.getAllErrors().stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest().body(new ErrorResponse(errors));
+        }
+        return service.updateData(request);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPLOYEE_ADMIN', 'ROLE_EMPLOYEE', 'ROLE_USER')")
     @PostMapping("/delete")
     public ResponseEntity<?> deleteData (@Valid @RequestBody ComboOrderedRequest request, BindingResult result) {
         if (result.hasErrors()) {

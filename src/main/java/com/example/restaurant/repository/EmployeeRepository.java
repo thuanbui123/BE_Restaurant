@@ -18,6 +18,9 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Intege
     @Query(value = "select * from employees where id = :id", nativeQuery = true)
     EmployeeEntity findOneById (@Param("id") Integer id);
 
+    @Query(value = "select * from employees where accountId = :id", nativeQuery = true)
+    EmployeeEntity findOneByAccountId (@Param("id") Integer id);
+
     boolean existsByCode (String code);
 
     void deleteByCode(String code);

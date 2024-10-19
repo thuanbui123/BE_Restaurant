@@ -20,6 +20,7 @@ public class SupplierMapper {
 
     public static SupplierResponse mapToResponse (SuppliersEntity entity) {
         SupplierResponse response = new SupplierResponse();
+        response.setId(entity.getId());
         response.setCode(entity.getCode());
         response.setName(entity.getName());
         response.setPhoneNumber(entity.getPhoneNumber());

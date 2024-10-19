@@ -1,11 +1,12 @@
 package com.example.restaurant.service;
 
+import com.example.restaurant.entity.OrderedEntity;
 import com.example.restaurant.entity.OrderedTableEntity;
 import com.example.restaurant.entity.EmbeddableId.OrderedTableId;
+import com.example.restaurant.entity.TableBookingEntity;
 import com.example.restaurant.entity.TablesEntity;
 import com.example.restaurant.mapper.OrderedTableMapper;
-import com.example.restaurant.repository.OrderedTableRepository;
-import com.example.restaurant.repository.TablesRepository;
+import com.example.restaurant.repository.*;
 import com.example.restaurant.request.OrderedTableRequest;
 import com.example.restaurant.response.BillResponse;
 import com.example.restaurant.response.OrderResponse;
@@ -22,6 +23,15 @@ import java.util.List;
 public class OrderedTableService {
     @Autowired
     private OrderedTableRepository repository;
+
+    @Autowired
+    private OrderedRepository orderedRepository;
+
+    @Autowired
+    private CustomersRepository customersRepository;
+
+    @Autowired
+    private TableBookingRepository tableBookingRepository;
 
     @Autowired
     private TablesRepository tablesRepository;
@@ -46,18 +56,16 @@ public class OrderedTableService {
 
     public ResponseEntity<?> addData (OrderedTableRequest request) {
         try {
-            OrderedTableId id = new OrderedTableId(request.getOrderedId(), request.getTableId());
-            OrderedTableEntity exists = repository.findOneByTableIdAndOrderedId(request.getTableId(), request.getOrderedId());
-            if (exists != null) {
-                return ResponseEntity.badRequest().body("Đơn hàng đã hoặc đang được phục vụ tại hệ thống bàn ăn của nhà hàng!");
-            }
-
+            OrderedEntity ordered = new OrderedEntity();
+            ordered.setCustomers(customersRepository.findOneById(request.getCustomerId()));
+            ordered.setStatus("Chờ xử lý");
+            OrderedEntity saveOrdered = orderedRepository.save(ordered);
+            OrderedTableId id = new OrderedTableId(saveOrdered.getId(), request.getTableId());
             OrderedTableEntity entity = OrderedTableMapper.mapToEntity(request);
-
             if (entity == null) {
-                return ResponseEntity.badRequest().body("Bàn ăn hoặc đơn hàng không tồn tại!");
+                return ResponseEntity.badRequest().body("Bàn ăn không tồn tại!");
             }
-
+            entity.setOrdered(saveOrdered);
 
             TablesEntity tablesEntity = tablesRepository.findOneById(request.getTableId());
             if (tablesEntity.getStatus().equalsIgnoreCase("Đang phục vụ")) {
@@ -66,8 +74,11 @@ public class OrderedTableService {
             entity.setId(id);
             repository.save(entity);
             tablesEntity.setStatus("Đang phục vụ");
+            TableBookingEntity tableBooking = tableBookingRepository.findOneById(request.getTableBookingId());
+            tableBooking.setStatus("Khách hàng đến nhận bàn!");
+            tableBookingRepository.save(tableBooking);
             tablesRepository.save(tablesEntity);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Thêm hóa đơn vào bàn ăn thành công!");
+            return ResponseEntity.status(HttpStatus.CREATED).body(ordered.getId());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }

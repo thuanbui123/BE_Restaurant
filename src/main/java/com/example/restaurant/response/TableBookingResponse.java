@@ -7,6 +7,7 @@ public class TableBookingResponse {
     private Integer id;
     private Integer customerId;
     private String customerName;
+    private String phoneNumber;
     private String bookingTime;
     private Integer tableId;
     private String status;

@@ -79,7 +79,7 @@ public class EmployeeOrderService {
                 if (customersEntity == null) {
                     return ResponseEntity.badRequest().body("Không tồn tại khách hàng có mã: " + customerId);
                 }
-                ordered.setCustomer(customersRepository.findOneById(customerId));
+                ordered.setCustomers(customersRepository.findOneById(customerId));
 
                 if (tablesEntity != null) {
                     List<TablesEntity> tablesEntities = new ArrayList<>();
@@ -213,13 +213,13 @@ public class EmployeeOrderService {
             AtomicLong totalPrice = new AtomicLong(0L);
             if (foodOrderedEntities != null && !foodOrderedEntities.isEmpty()) {
                 for (FoodOrderedEntity foodOrdered : foodOrderedEntities) {
-                    totalPrice.set(totalPrice.get() + foodOrdered.getTotalPrice());
+                    totalPrice.set(totalPrice.get() + foodOrdered.getTotalPrice() * foodOrdered.getQuantity());
                 }
             }
             List<ComboOrderEntity> comboOrderEntities = comboOrderRepository.findByOrderedId(orderId);
             if (comboOrderEntities != null && !comboOrderEntities.isEmpty()) {
                 for (ComboOrderEntity comboOrder : comboOrderEntities) {
-                    totalPrice.set(totalPrice.get() + comboOrder.getTotalPrice());
+                    totalPrice.set(totalPrice.get() + comboOrder.getTotalPrice() * comboOrder.getQuantity());
                     Integer quantity = comboOrder.getCombo().getSoldCount();
                     if (quantity < comboOrder.getQuantity()) {
                         return ResponseEntity.badRequest().body("Combo " + comboOrder.getCombo().getName() + " không đủ số lượng để bán");

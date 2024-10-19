@@ -37,6 +37,7 @@ public class CustomerMapper {
 
     public static CustomerResponse mapToResponse (CustomersEntity entity) {
         CustomerResponse response = new CustomerResponse();
+        response.setId(entity.getId());
         response.setCode(entity.getCode());
         response.setName(entity.getName());
         response.setPhoneNumber(entity.getPhoneNumber());

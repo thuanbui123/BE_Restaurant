@@ -31,4 +31,6 @@ public interface ComboOrderRepository extends JpaRepository<ComboOrderEntity, In
     void deleteById (ComboOrderedId id);
 
     boolean existsById(ComboOrderedId id);
+
+    ComboOrderEntity findById(ComboOrderedId id);
 }

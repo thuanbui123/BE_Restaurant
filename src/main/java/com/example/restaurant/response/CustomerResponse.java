@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class CustomerResponse {
+    private Integer id;
     private String code;
     private String name;
     private String phoneNumber;

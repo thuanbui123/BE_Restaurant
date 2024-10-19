@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ComboRepository extends JpaRepository<ComboEntity, Integer> {
     Page<ComboEntity> findBySlugContainingIgnoreCase(String slug, Pageable pageable);
@@ -28,6 +30,8 @@ public interface ComboRepository extends JpaRepository<ComboEntity, Integer> {
 
     @Query(value = "select * from combo where id = :id", nativeQuery = true)
     ComboEntity findOneById (@Param("id") Integer id);
+
+    List<ComboEntity> findByStatus(String status);
 
     ComboEntity findOneByCode(String code);
 

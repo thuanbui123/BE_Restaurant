@@ -16,7 +16,7 @@ public interface TableBookingRepository extends JpaRepository<TableBookingEntity
 
     @Query(value = "select * from tablebooking where status = :status" +
             " order by bookingTime desc", nativeQuery = true)
-    Page<TableBookingEntity> findByStatus(@Param("status") String status, Pageable pageable);
+    List<TableBookingEntity> findByStatus(@Param("status") String status);
 
     @Query(value = "select * from tablebooking where customerId = :id " +
             "order by bookingTime desc", nativeQuery = true)

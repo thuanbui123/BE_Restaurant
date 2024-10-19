@@ -19,7 +19,7 @@ public class OrderedEntity extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "customerId")
     @JsonBackReference
-    private CustomersEntity customer;
+    private CustomersEntity customers;
 
     @ManyToMany
     @JoinTable(

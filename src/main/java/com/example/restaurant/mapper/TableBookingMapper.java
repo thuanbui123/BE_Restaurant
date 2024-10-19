@@ -6,11 +6,8 @@ import com.example.restaurant.repository.CustomersRepository;
 import com.example.restaurant.repository.TablesRepository;
 import com.example.restaurant.request.TableBookingRequest;
 import com.example.restaurant.response.TableBookingResponse;
-import com.example.restaurant.utils.TimeConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 @Component
 public class TableBookingMapper {
@@ -40,6 +37,7 @@ public class TableBookingMapper {
         TableBookingResponse response = new TableBookingResponse();
         response.setId(entity.getId());
         response.setStatus(entity.getStatus());
+        response.setPhoneNumber(entity.getCustomer().getPhoneNumber());
         response.setTableId(entity.getTablesEntity().getId());
         response.setNote(entity.getNote());
         response.setBookingTime(entity.getBookingTime());

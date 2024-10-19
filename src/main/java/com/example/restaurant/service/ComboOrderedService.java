@@ -68,6 +68,48 @@ public class ComboOrderedService {
     }
 
     @Transactional
+    public ResponseEntity<?> updateData(ComboOrderedRequest request) {
+        try {
+            // Kiểm tra xem đơn hàng có tồn tại không
+            if (repository.findByOrderedId(request.getOrdered()) == null) {
+                return ResponseEntity.badRequest().body("Đơn hàng có mã: " + request.getOrdered() + " không tồn tại.");
+            }
+
+            // Kiểm tra từng combo trong đơn hàng
+            for (ComboOrderedDetailRequest comboRequest : request.getRequests()) {
+                ComboOrderedId comboOrderedId = new ComboOrderedId(comboRequest.getComboId(), request.getOrdered());
+                if (!repository.existsById(comboOrderedId)) {
+                    return ResponseEntity.badRequest().body("Combo món ăn có mã: " + comboRequest.getComboId() + " không tồn tại trong đơn hàng có mã: " + request.getOrdered());
+                }
+            }
+
+            // Cập nhật số lượng cho các combo đã đặt
+            for (ComboOrderedDetailRequest comboRequest : request.getRequests()) {
+                ComboOrderedId comboOrderedId = new ComboOrderedId(comboRequest.getComboId(), request.getOrdered());
+                ComboOrderEntity entity = repository.findById(comboOrderedId);
+                if (entity == null) {
+                    return ResponseEntity.badRequest().body("Combo không tìm thấy: " + comboRequest.getComboId());
+                }
+
+                // Kiểm tra trạng thái của đơn hàng
+                if (!entity.getOrdered().getStatus().equalsIgnoreCase("Chờ xử lý")) {
+                    return ResponseEntity.badRequest().body("Không được cập nhật combo món ăn vào đơn hàng có trạng thái đã thanh toán hoặc đã hủy!");
+                }
+
+                // Cập nhật số lượng
+                entity.setQuantity(comboRequest.getQuantity());
+                repository.save(entity);
+            }
+
+            return ResponseEntity.ok("Cập nhật combo món ăn vào đơn hàng thành công.");
+        } catch (Exception e) {
+            e.printStackTrace(); // In thông báo lỗi chi tiết
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
+
+    @Transactional
     public ResponseEntity<?> deleteData (ComboOrderedRequest request) {
         try {
             for (ComboOrderedDetailRequest comboRequest : request.getRequests()) {

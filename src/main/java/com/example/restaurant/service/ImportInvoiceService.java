@@ -47,11 +47,21 @@ public class ImportInvoiceService {
         );
     }
 
+    public ResponseEntity<?> findOneByCode (String code) {
+        return ResponseEntity.ok().body(
+                ImportInvoiceMapper.mapToResponse(repository.findOneByCode(code))
+        );
+    }
+
     public ResponseEntity<?> findData (String prefix, Integer page, Integer size, String query) {
-        Pageable pageable = PageRequest.of(page, size);
+
         if (prefix.equals("find-all") && query == null) {
+            Pageable pageable = PageRequest.of(page, size);
             return findAll(pageable);
+        } else if (prefix.equals("find-one-by-code") && query != null) {
+            return findOneByCode(query);
         } else if (prefix.equals("search") && query != null) {
+            Pageable pageable = PageRequest.of(page, size);
             return findByCode(query, pageable);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("API không tồn tại!");

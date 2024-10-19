@@ -26,11 +26,8 @@ public class OrderedTableMapper {
 
     public static OrderedTableEntity mapToEntity (OrderedTableRequest request) {
         OrderedTableEntity entity = new OrderedTableEntity();
-        OrderedEntity ordered = orderedRepository.findOneById(request.getOrderedId());
-        if (ordered == null) return null;
         TablesEntity tablesEntity = tablesService.findById(request.getTableId());
         if (tablesEntity == null) return null;
-        entity.setOrdered(ordered);
         entity.setTable(tablesEntity);
         return entity;
     }

@@ -4,6 +4,8 @@ import lombok.Data;
 
 @Data
 public class ImportInvoiceResponse {
+    private Integer id;
+
     private String code;
 
     private String entryDate;

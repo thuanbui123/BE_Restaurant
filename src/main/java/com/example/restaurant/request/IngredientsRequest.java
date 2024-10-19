@@ -26,7 +26,5 @@ public class IngredientsRequest {
     @NotBlank(message = "Đơn vị của nguyên liệu là trường dữ liệu bắt buộc!")
     private String unit;
 
-    @NotNull(message = "Mã nhà cung cấp là trường dữ liệu bắt buộc!")
-    @Min(value = 1, message = "Mã nhà cung câp phải lớn hơn 0!")
     private Integer supplierId;
 }

@@ -40,5 +40,9 @@ public class CustomersEntity extends BaseEntity{
 
     @OneToMany(mappedBy = "customers", cascade = CascadeType.ALL)
     @JsonManagedReference
+    private Set<OrderedEntity> orderedEntities;
+
+    @OneToMany(mappedBy = "customersEntity", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<CustomerFoodReviewEntity> reviewEntities;
 }

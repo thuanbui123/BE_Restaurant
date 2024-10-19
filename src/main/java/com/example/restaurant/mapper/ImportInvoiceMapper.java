@@ -32,6 +32,7 @@ public class ImportInvoiceMapper {
 
     public static ImportInvoiceResponse mapToResponse (ImportInvoiceEntity entity) {
         ImportInvoiceResponse response = new ImportInvoiceResponse();
+        response.setId(entity.getId());
         response.setCode(entity.getCode());
         response.setEntryDate(TimeConvertUtil.convertLocalDateTimeToString(entity.getEntryDate()));
         response.setEmployeeName(entity.getEmployeeEntity().getName());

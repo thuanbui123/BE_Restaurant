@@ -39,7 +39,7 @@ public class ComboService {
     }
 
     public ResponseEntity<?> findAllUser () {
-        return ResponseEntity.ok(repository.findAll().stream()
+        return ResponseEntity.ok(repository.findByStatus("Đang áp dụng").stream()
                 .map(ComboMapper::mapToUserResponse)
                 .toList());
     }

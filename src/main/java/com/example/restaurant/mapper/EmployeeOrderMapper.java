@@ -19,10 +19,10 @@ public class EmployeeOrderMapper {
         EmployeeOrderResponse response = new EmployeeOrderResponse();
         response.setCode(bill.getCode());
         response.setDateOrder(TimeConvertUtil.convertTimestampToDate(ordered.getCreatedAt()));
-        response.setCustomerCode(ordered.getCustomer().getCode());
-        response.setCustomerName(ordered.getCustomer().getName());
-        response.setNumberPhone(ordered.getCustomer().getPhoneNumber());
-        response.setAddress(ordered.getCustomer().getAddress());
+        response.setCustomerCode(ordered.getCustomers().getCode());
+        response.setCustomerName(ordered.getCustomers().getName());
+        response.setNumberPhone(ordered.getCustomers().getPhoneNumber());
+        response.setAddress(ordered.getCustomers().getAddress());
         response.setTotalPrice(bill.getTotalPrice());
         response.setDatePayment(TimeConvertUtil.convertTimestampToDate(bill.getCreatedAt()));
         if (ordered.getTables() != null && !ordered.getTables().isEmpty()) {

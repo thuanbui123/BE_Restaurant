@@ -20,7 +20,7 @@ public class CustomerFoodReviewEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "customerId")
     @JsonBackReference
-    private CustomersEntity customers;
+    private CustomersEntity customersEntity;
 
     @ManyToOne
     @JoinColumn(name = "foodId")

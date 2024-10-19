@@ -81,7 +81,7 @@ public class UserOrderService {
             OrderedEntity entity = orderedRepository.findByCustomerIdAndStatus(customerId, "Chờ xử lý");
             if (entity == null) {
                 entity = new OrderedEntity();
-                entity.setCustomer(customersRepository.findOneById(customerId));
+                entity.setCustomers(customersRepository.findOneById(customerId));
                 entity.setStatus("Chờ xử lý");
                 orderedRepository.save(entity);
             }
